@@ -1,0 +1,24 @@
+.root.UI {
+    --background-color__UI: rgb(160, 100, 100);
+}
+
+.root.UI {
+    padding: 8px;
+    background-color: var(--background-color__UI);
+    color: white;
+}
+
+Label.UI {
+    border-color: rgb(200, 200, 100);
+    border-width: 4px;
+    -unity-text-align: middle-center;
+    padding: 8px;
+}
+
+TextElement.UI {
+    background-color: var(--background-color__UI);
+    border-color: rgb(200, 200, 200);
+    border-width: 1px;
+    -unity-text-align: middle-center;
+    padding: 4px;
+}

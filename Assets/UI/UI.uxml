@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xmlns:editor="UnityEditor.UIElements"
+        xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+        class="root"
+>
+    <engine:Style src="UI.uss"/>
+
+    <engine:VisualElement name="rrr">
+        <engine:Label name="title" text="from ui1"/>
+        <engine:TextElement name="" text="text from ui 1"/>
+
+        <Child>
+            <engine:TextElement text="slotted from ui to child 1"/>
+            <GroundChild string_value="I'm groundchild at ui" int_value="1" >
+                <engine:TextElement text="slotted from ui to groundchild 1"/>
+            </GroundChild>
+            <engine:VisualElement>
+                <engine:TextElement text="slotted from ui to visual element 1"/>
+            </engine:VisualElement>
+            <GroundChild string_value="I'm groundchild at ui" int_value="2" >
+                <engine:TextElement text="slotted from ui to groundchild 2"/>
+            </GroundChild>
+        </Child>
+
+        <engine:TextElement name="" text="text from ui 2"/>
+    </engine:VisualElement>
+</engine:UXML>

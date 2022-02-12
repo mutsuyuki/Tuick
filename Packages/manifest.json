@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+    "com.unity.addressables": "1.19.6",
+    "com.unity.ide.rider": "3.0.7",
+    "com.unity.render-pipelines.universal": "12.1.0",
+    "com.unity.toolchain.linux-x86_64": "0.1.19-preview",
+    "com.unity.vectorgraphics": "2.0.0-preview.17",
+    "com.unity.visualeffectgraph": "12.1.0",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.physics2d": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.unitywebrequestwww": "1.0.0"
+  }
+}
