@@ -6,7 +6,7 @@ public sealed class GroundChild : BaseElement
 {
     private Label titleLabel;
 
-    public GroundChild() : base("Assets/UI/GroundChild.uxml")
+    public GroundChild()
     {
         titleLabel = contentContainer.Q<Label>("title",  instanceId);
     }

@@ -1,8 +1,5 @@
-using System;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 
 
@@ -23,36 +20,23 @@ public class BaseElement : VisualElement
 
     private TemplateContainer templateContainer;
 
-    public BaseElement(string uxmlPath = "")
+    public BaseElement()
     {
         // インスタンスID決定
         instanceId = ObjectIdFactory.instance.GetNewId();
 
         // テンプレート読み込み
-        if (uxmlPath != "")
-        {
-            var uxmlHandle = Addressables.LoadAssetAsync<VisualTreeAsset>(uxmlPath);
-            var visualTreeAsset = uxmlHandle.WaitForCompletion();
-            templateContainer = visualTreeAsset.CloneTree();
-            Add(templateContainer);
+        UXMLList uxmlList = UXMLListStore.Instance.GetUXMLList();
+        templateContainer = uxmlList.GetTemplate(GetType().Name);
+        Add(templateContainer);
 
-            // 疑似scopedにするために、全elementにクラスを付与
-            templateContainer.AddToClassList(GetType().ToString());
-            SetClassNameRecursive(templateContainer);
-        }
+        // 疑似scopedにするために、全elementにクラスを付与
+        templateContainer.AddToClassList(GetType().ToString());
+        SetClassNameRecursive(templateContainer);
 
         // イベント登録
-        RegisterCallback<AttachToPanelEvent>(e => omitDuplicatedEvent(() => OnAttach(e)));
-        RegisterCallback<GeometryChangedEvent>(e => omitDuplicatedEvent(() => OnGeometryChange(e)));
-
-        RegisterCallback<PointerDownEvent>(e => omitDuplicatedEvent(() => OnPointerDown(e)));
-        RegisterCallback<PointerMoveEvent>(e => omitDuplicatedEvent(() => OnPointerMove(e)));
-        RegisterCallback<PointerUpEvent>(e => omitDuplicatedEvent(() => OnPointerUp(e)));
-
-        RegisterCallback<PointerEnterEvent>(e => omitDuplicatedEvent(() => OnPointerEnter(e)));
-        RegisterCallback<PointerOutEvent>(e => omitDuplicatedEvent(() => OnPointerOut(e)));
-
-        RegisterCallback<WheelEvent>(e => omitDuplicatedEvent(() => OnWheel(e)));
+        RegisterCallback<AttachToPanelEvent>(e => OnAttach(e));
+        RegisterCallback<GeometryChangedEvent>(e => OnGeometryChange(e));
     }
 
     protected virtual void OnAttach(AttachToPanelEvent e)
@@ -70,30 +54,7 @@ public class BaseElement : VisualElement
 
     protected virtual void OnGeometryChange(GeometryChangedEvent e)
     {
-    }
-
-    protected virtual void OnPointerDown(PointerDownEvent e)
-    {
-    }
-
-    protected virtual void OnPointerMove(PointerMoveEvent e)
-    {
-    }
-
-    protected virtual void OnPointerUp(PointerUpEvent e)
-    {
-    }
-
-    protected virtual void OnPointerEnter(PointerEnterEvent e)
-    {
-    }
-
-    protected virtual void OnPointerOut(PointerOutEvent e)
-    {
-    }
-
-    protected virtual void OnWheel(WheelEvent e)
-    {
+        // Debug.Log(GetType().Name + ":size changed");
     }
 
     // 自Element内の各要素にクラス名を付与（疑似scoped cssのため）
@@ -161,22 +122,5 @@ public class BaseElement : VisualElement
         }
 
         slot.parent.Remove(slot);
-    }
-
-
-    // ------------暫定対応--------------------------------------
-    // Linuxだとマウスイベントが同時に２回発生するので、それの暫定回避用
-    // Unity側で対応されたら、削除する
-    private float previousEventTime = -1;
-
-    private void omitDuplicatedEvent(Action callback)
-    {
-        var currentTime = Time.time;
-        if (currentTime != previousEventTime)
-        {
-            callback();
-        }
-
-        previousEventTime = currentTime;
     }
 }

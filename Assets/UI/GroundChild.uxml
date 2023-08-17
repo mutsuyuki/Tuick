@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<engine:UXML
+<ui:UXML
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:engine="UnityEngine.UIElements"
-        xmlns:editor="UnityEditor.UIElements"
+        xmlns:ui="UnityEngine.UIElements"
         xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
         class="root"
 >
-    <engine:Style src="GroundChild.uss"/>
+    <ui:Style src="GroundChild.uss"/>
 
-    <engine:Label name="title" class="bbb" text="I am GroundChild Label"/>
-    <engine:VisualElement class="contents">
-        <engine:TextElement text="text from groundchild1"/>
-        <engine:VisualElement class="slot_container">
+    <ui:Label name="title" class="bbb" text="I am GroundChild Label"/>
+    <ui:VisualElement class="contents">
+        <ui:TextElement text="text from groundchild1"/>
+        <ui:VisualElement class="slot_container">
             <Slot/>
-        </engine:VisualElement>
-        <engine:TextElement text="text from groundchild2"/>
-        <engine:Image style="--unity-image: url('Images/heart.svg');"/>
-    </engine:VisualElement>
-</engine:UXML>
+        </ui:VisualElement>
+        <ui:TextElement text="text from groundchild2"/>
+        <ui:Image style="--unity-image: url('Images/heart.svg');"/>
+    </ui:VisualElement>
+</ui:UXML>
