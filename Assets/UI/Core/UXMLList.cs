@@ -5,10 +5,11 @@ using UnityEngine.UIElements;
 using UnityEditor;
 #endif
 
-[CreateAssetMenu(menuName = "UXML List", fileName = "UXMLList")]
+[CreateAssetMenu(menuName = "UXMLList", fileName = "UXMLList")]
 public class UXMLList : ScriptableObject
 {
     [SerializeField] private VisualTreeAsset[] uxmlList;
+
     public VisualTreeAsset[] GetUxmlList()
     {
         return uxmlList;
@@ -30,7 +31,11 @@ public class UXMLList : ScriptableObject
     [ContextMenu("Load all uxml assets")]
     public void LoadUXMLAssets()
     {
-        string directoryPath = "Assets";
+        LoadUXMLAssets("Assets");
+    }
+
+    public void LoadUXMLAssets(string directoryPath)
+    {
         string[] guids = AssetDatabase.FindAssets("t:VisualTreeAsset", new string[] { directoryPath });
         uxmlList = new VisualTreeAsset[guids.Length];
 
