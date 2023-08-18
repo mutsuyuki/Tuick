@@ -42,7 +42,6 @@ public class USSList : ScriptableObject
         ussList = new StyleSheet[paths.Count];
         for (int i = 0; i < paths.Count; i++)
         {
-            Debug.Log("uss:" + i.ToString() + " " + paths[i]);
             ussList[i] = AssetDatabase.LoadAssetAtPath<StyleSheet>(paths[i]);
             
         }

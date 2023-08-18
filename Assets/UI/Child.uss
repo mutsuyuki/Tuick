@@ -1,20 +1,20 @@
-.root.Child {
+.root {
     --background-color__Child: rgb(100, 160, 100);
 }
 
-.root.Child {
+.root {
     padding: 8px;
     background-color: var(--background-color__Child);
     color: white;
 }
 
-.slot_container.Child {
+.slot_container {
     padding: 8px;
     border-width: 1px;
     border-color: rgb(200, 200, 200);
 }
 
-Label.Child {
+Label {
     background-color: var(--background-color__Child);
     border-color: rgb(200, 200, 100);
     border-width: 4px;
@@ -22,7 +22,7 @@ Label.Child {
     padding: 8px;
 }
 
-TextElement.Child {
+TextElement {
     background-color: var(--background-color__Child);
     border-color: rgb(200, 200, 200);
     border-width: 1px;

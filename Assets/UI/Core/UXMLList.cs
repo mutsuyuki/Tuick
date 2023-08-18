@@ -41,7 +41,6 @@ public class UXMLList : ScriptableObject
         uxmlList = new VisualTreeAsset[paths.Count];
         for (int i = 0; i < paths.Count; i++)
         {
-            Debug.Log("uxml:" + i.ToString() + " " + paths[i]);
             uxmlList[i] = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(paths[i]);
         }
     }

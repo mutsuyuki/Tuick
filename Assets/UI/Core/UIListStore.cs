@@ -47,7 +47,7 @@ public class UIListStore
         }
     }
 
-    private async void Initialize()
+    private void Initialize()
     {
 #if UNITY_EDITOR
         // Resourcesフォルダのパスを取得

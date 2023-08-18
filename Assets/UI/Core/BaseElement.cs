@@ -39,7 +39,6 @@ public class BaseElement : VisualElement
         StyleSheet styleSheet = ussList.GetTemplate(GetType().Name);
         templateContainer.styleSheets.Add(styleSheet);
 
-
         // イベント登録
         RegisterCallback<AttachToPanelEvent>(e => OnAttach(e));
         RegisterCallback<GeometryChangedEvent>(e => OnGeometryChange(e));

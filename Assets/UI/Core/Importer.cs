@@ -1,14 +1,13 @@
 #if UNITY_EDITOR
 
 using UnityEditor;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 
 public class Importer : AssetPostprocessor
 {
-    private static void OnPostprocessAllAssets(
+    private async static void OnPostprocessAllAssets(
         string[] importedAssets,
         string[] deletedAssets,
         string[] movedAssets,
@@ -42,10 +41,12 @@ public class Importer : AssetPostprocessor
             }
         }
 
+        // // 1sまつ
+        // await System.Threading.Tasks.Task.Delay(1000);
+
         if (isUXMLChanged)
         {
             UIListStore.Instance.GetUXMLList().LoadUXMLAssets();
-
         }
 
         if (isUSSChanged)
