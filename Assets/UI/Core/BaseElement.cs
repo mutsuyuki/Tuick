@@ -26,7 +26,7 @@ public class BaseElement : VisualElement
         instanceId = ObjectIdFactory.instance.GetNewId();
 
         // テンプレート読み込み
-        UXMLList uxmlList = UXMLListStore.Instance.GetUXMLList();
+        UXMLList uxmlList = UIListStore.Instance.GetUXMLList();
         templateContainer = uxmlList.GetTemplate(GetType().Name);
         Add(templateContainer);
 

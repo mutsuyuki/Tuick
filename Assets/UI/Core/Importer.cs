@@ -34,7 +34,7 @@ public class Importer : AssetPostprocessor
 
         if (isUXMLChanged)
         {
-            UXMLListStore.Instance.GetUXMLList().LoadUXMLAssets("Assets");
+            UIListStore.Instance.GetUXMLList().LoadUXMLAssets("Assets");
         }
 
         if (isUSSChanged)

@@ -6,10 +6,10 @@ using System.Reflection;
 using UnityEditor;
 #endif
 
-public class UXMLListStore
+public class UIListStore
 {
     // プライベートコンストラクタ
-    private UXMLListStore()
+    private UIListStore()
     {
     }
 
@@ -23,15 +23,15 @@ public class UXMLListStore
 
 
     // シングルトン化
-    private static UXMLListStore _instance;
+    private static UIListStore _instance;
 
-    public static UXMLListStore Instance
+    public static UIListStore Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = new UXMLListStore();
+                _instance = new UIListStore();
                 _instance.Initialize();
             }
 
