@@ -4,7 +4,6 @@
     xmlns:ui="UnityEngine.UIElements"
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
-    <ui:Style src="Root.uss"/>
     <ui:ScrollView>
         <UI/>
     </ui:ScrollView>

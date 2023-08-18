@@ -34,6 +34,12 @@ public class BaseElement : VisualElement
         templateContainer.AddToClassList(GetType().ToString());
         SetClassNameRecursive(templateContainer);
 
+        // テンプレート読み込み
+        USSList ussList = UIListStore.Instance.GetUSSList();
+        StyleSheet styleSheet = ussList.GetTemplate(GetType().Name);
+        templateContainer.styleSheets.Add(styleSheet);
+
+
         // イベント登録
         RegisterCallback<AttachToPanelEvent>(e => OnAttach(e));
         RegisterCallback<GeometryChangedEvent>(e => OnGeometryChange(e));

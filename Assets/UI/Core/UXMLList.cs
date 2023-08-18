@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEditor;
 #endif
 
@@ -28,21 +29,20 @@ public class UXMLList : ScriptableObject
     }
 
 #if UNITY_EDITOR
-    [ContextMenu("Load all uxml assets")]
+    [ContextMenu("Load uxml assets")]
     public void LoadUXMLAssets()
     {
-        LoadUXMLAssets("Assets");
+        LoadUXMLAssets(PathUtil.GetUXMLDirPath());
     }
 
     public void LoadUXMLAssets(string directoryPath)
     {
-        string[] guids = AssetDatabase.FindAssets("t:VisualTreeAsset", new string[] { directoryPath });
-        uxmlList = new VisualTreeAsset[guids.Length];
-
-        for (int i = 0; i < guids.Length; i++)
+        List<string> paths = PathUtil.SearchDeployedUXMLPaths();
+        uxmlList = new VisualTreeAsset[paths.Count];
+        for (int i = 0; i < paths.Count; i++)
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
-            uxmlList[i] = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(assetPath);
+            Debug.Log("uxml:" + i.ToString() + " " + paths[i]);
+            uxmlList[i] = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(paths[i]);
         }
     }
 #endif

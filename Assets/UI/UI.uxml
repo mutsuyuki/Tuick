@@ -5,7 +5,6 @@
         xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
         class="root"
 >
-    <ui:Style src="UI.uss"/>
 
     <ui:VisualElement name="rrr">
         <ui:Label name="title" text="from ui1"/>

@@ -5,9 +5,8 @@
         xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
         class="root"
 >
-    <ui:Style src="Child.uss"/>
 
-    <ui:Label text="I am child Label"/>
+    <ui:Label text="Iiiiii am child Label"/>
     <GroundChild string_value="I'm groundchild at child" int_value="1">
         <ui:TextElement text="slotted from child to groundchild 1"/>
     </GroundChild>
@@ -17,4 +16,5 @@
     <GroundChild string_value="I'm groundchild at child" int_value="2">
         <ui:TextElement text="slotted from child to groundchild 2"/>
     </GroundChild>
+
 </ui:UXML>
