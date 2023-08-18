@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 public class Importer : AssetPostprocessor
 {
-    private async static void OnPostprocessAllAssets(
+    private static void OnPostprocessAllAssets(
         string[] importedAssets,
         string[] deletedAssets,
         string[] movedAssets,
@@ -40,9 +40,6 @@ public class Importer : AssetPostprocessor
                 isUSSChanged = true;
             }
         }
-
-        // // 1sまつ
-        // await System.Threading.Tasks.Task.Delay(1000);
 
         if (isUXMLChanged)
         {

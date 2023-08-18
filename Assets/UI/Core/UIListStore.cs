@@ -53,10 +53,6 @@ public class UIListStore
         // Resourcesフォルダのパスを取得
         string saveDir = PathUtil.GetResourcesDirPath();
 
-
-        // uxmlファイルをコピー
-        UXMLProcessor.DeployAll();
-
         // umxl管理ファイルがない場合は作る
         string uxmlListPath = Path.Combine(saveDir, nameof(UXMLList)) + ".asset";
         if (!AssetDatabase.LoadAssetAtPath<UXMLList>(uxmlListPath))
@@ -65,6 +61,9 @@ public class UIListStore
 
             try
             {
+                // uxmlファイルをコピー
+                UXMLProcessor.DeployAll();
+                // 管理ファイルを作成
                 AssetDatabase.CreateAsset(uxmlListData, uxmlListPath);
             }
             catch (System.Exception e)
@@ -75,10 +74,6 @@ public class UIListStore
             }
         }
 
-
-        // ussファイルをローカライズしてコピー
-        USSProcessor.DeployAll();
-
         // uss管理ファイルがない場合は作る
         string ussListPath = Path.Combine(saveDir, nameof(USSList)) + ".asset";
         if (!AssetDatabase.LoadAssetAtPath<USSList>(ussListPath))
@@ -87,6 +82,9 @@ public class UIListStore
 
             try
             {
+                // ussファイルをローカライズしてコピー
+                USSProcessor.DeployAll();
+                // 管理ファイルを作成
                 AssetDatabase.CreateAsset(ussListData, ussListPath);
             }
             catch (System.Exception e)
