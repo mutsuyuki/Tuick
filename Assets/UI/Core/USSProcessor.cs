@@ -16,7 +16,7 @@ public class USSProcessor
         Directory.Delete(ussDirPath, true);
 
         // コピー
-        List<string> paths = PathUtil.SearchUSSPaths();
+        List<string> paths = PathUtil.SearchSourceUSSPaths();
         for (int i = 0; i < paths.Count; i++)
         {
             Deploy(paths[i]);

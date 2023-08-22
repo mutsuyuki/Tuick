@@ -1,8 +1,8 @@
 #if UNITY_EDITOR
 
+using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 public class Importer : AssetPostprocessor
@@ -20,7 +20,10 @@ public class Importer : AssetPostprocessor
         {
             if (path.EndsWith(".uxml"))
             {
-                if (path.Contains(PathUtil.GetUXMLDirPath()))
+                if (
+                    path.Contains(PathUtil.GetUXMLDirPath()) ||
+                    path.Contains(PathUtil.GetTemplateDirPath())
+                )
                 {
                     continue;
                 }
@@ -31,7 +34,10 @@ public class Importer : AssetPostprocessor
 
             if (path.EndsWith(".uss"))
             {
-                if (path.Contains(PathUtil.GetUSSDirPath()))
+                if (
+                    path.Contains(PathUtil.GetUSSDirPath()) ||
+                    path.Contains(PathUtil.GetTemplateDirPath())
+                )
                 {
                     continue;
                 }
@@ -43,12 +49,26 @@ public class Importer : AssetPostprocessor
 
         if (isUXMLChanged)
         {
-            UIListStore.Instance.GetUXMLList().LoadUXMLAssets();
+            try
+            {
+                UIListStore.Instance.GetUXMLList().LoadUXMLAssets();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
 
         if (isUSSChanged)
         {
-            UIListStore.Instance.GetUSSList().LoadUSSAssets();
+            try
+            {
+                UIListStore.Instance.GetUSSList().LoadUSSAssets();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
     }
 }

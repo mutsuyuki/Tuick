@@ -1,0 +1,21 @@
+
+.root {
+    --background-color__Template: rgb(100, 100, 180);
+}
+
+.root {
+    padding: 8px;
+    background-color: var(--background-color__Template);
+    color: white;
+}
+
+.contents {
+    border-width: 1px;
+    border-color: tomato;
+}
+
+.slot_container {
+    border-width: 1px;
+    border-color: rgb(200, 200, 200);
+    padding: 8px;
+}

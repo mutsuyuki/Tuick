@@ -22,9 +22,9 @@ public class PathUtil : AssetPostprocessor
         return Path.GetDirectoryName(rootFilePath);
     }
 
-    public static string GetTempDirPath()
+    public static string GetTemplateDirPath()
     {
-        string tempDirectory = Path.Combine(GetLibRootPath(), "Temp");
+        string tempDirectory = Path.Combine(GetLibRootPath(), "Template");
 
         // Tempフォルダが存在しなければ作成
         if (!Directory.Exists(tempDirectory))
@@ -35,9 +35,22 @@ public class PathUtil : AssetPostprocessor
         return tempDirectory;
     }
 
+    public static string GetBuildDirPath()
+    {
+        string buildDirectory = Path.Combine(GetLibRootPath(), "Build");
+
+        // Tempフォルダが存在しなければ作成
+        if (!Directory.Exists(buildDirectory))
+        {
+            Directory.CreateDirectory(buildDirectory);
+        }
+
+        return buildDirectory;
+    }
+
     public static string GetResourcesDirPath()
     {
-        string resourcesDirectory = Path.Combine(GetTempDirPath(), "Resources");
+        string resourcesDirectory = Path.Combine(GetBuildDirPath(), "Resources");
 
         // Resourcesフォルダが存在しなければ作成
         if (!Directory.Exists(resourcesDirectory))
@@ -50,7 +63,7 @@ public class PathUtil : AssetPostprocessor
 
     public static string GetUXMLDirPath()
     {
-        string ussDirectory = Path.Combine(GetTempDirPath(), "uxml");
+        string ussDirectory = Path.Combine(GetBuildDirPath(), "uxml");
 
         // Resourcesフォルダが存在しなければ作成
         if (!Directory.Exists(ussDirectory))
@@ -63,7 +76,7 @@ public class PathUtil : AssetPostprocessor
 
     public static string GetUSSDirPath()
     {
-        string ussDirectory = Path.Combine(GetTempDirPath(), "uss");
+        string ussDirectory = Path.Combine(GetBuildDirPath(), "uss");
 
         // Resourcesフォルダが存在しなければ作成
         if (!Directory.Exists(ussDirectory))
@@ -81,7 +94,10 @@ public class PathUtil : AssetPostprocessor
         for (int i = 0; i < guids.Length; i++)
         {
             string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            if (path.Contains(GetUXMLDirPath()))
+            if (
+                path.Contains(GetUXMLDirPath()) ||
+                path.Contains(GetTemplateDirPath())
+            )
             {
                 continue;
             }
@@ -92,6 +108,26 @@ public class PathUtil : AssetPostprocessor
         return paths;
     }
 
+    public static List<string> SearchSourceUSSPaths(string directoryPath = "Assets")
+    {
+        string[] guids = AssetDatabase.FindAssets("t:StyleSheet", new string[] { directoryPath });
+        List<string> paths = new List<string>();
+        for (int i = 0; i < guids.Length; i++)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            if (
+                path.Contains(GetUSSDirPath()) ||
+                path.Contains(GetTemplateDirPath()) ||
+                !path.EndsWith(".uss"))
+            {
+                continue;
+            }
+
+            paths.Add(path);
+        }
+
+        return paths;
+    }
 
     public static List<string> SearchDeployedUXMLPaths()
     {
@@ -108,23 +144,6 @@ public class PathUtil : AssetPostprocessor
     }
 
 
-    public static List<string> SearchUSSPaths(string directoryPath = "Assets")
-    {
-        string[] guids = AssetDatabase.FindAssets("t:StyleSheet", new string[] { directoryPath });
-        List<string> paths = new List<string>();
-        for (int i = 0; i < guids.Length; i++)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            if (path.Contains(GetUSSDirPath()) || !path.EndsWith(".uss"))
-            {
-                continue;
-            }
-
-            paths.Add(path);
-        }
-
-        return paths;
-    }
 
     public static List<string> SearchDeployedUSSPaths()
     {

@@ -5,24 +5,21 @@
         xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
         class="root"
 >
+    <ui:Label name="title" text="from ui1"/>
+    <ui:TextElement name="" text="text from ui 1"/>
 
-    <ui:VisualElement name="rrr">
-        <ui:Label name="title" text="from ui1"/>
-        <ui:TextElement name="" text="text from ui 1"/>
+    <Child>
+        <ui:TextElement text="slotted from ui to child 1"/>
+        <GroundChild string_value="I'm groundchild at ui" int_value="1">
+            <ui:TextElement text="slotted from ui to groundchild 1"/>
+        </GroundChild>
+        <ui:VisualElement>
+            <ui:TextElement text="slotted from ui to visual element 1"/>
+        </ui:VisualElement>
+        <GroundChild string_value="I'm groundchild at ui" int_value="2">
+            <ui:TextElement text="slotted from ui to groundchild 2"/>
+        </GroundChild>
+    </Child>
 
-        <Child>
-            <ui:TextElement text="slotted from ui to child 1"/>
-            <GroundChild string_value="I'm groundchild at ui" int_value="1" >
-                <ui:TextElement text="slotted from ui to groundchild 1"/>
-            </GroundChild>
-            <ui:VisualElement>
-                <ui:TextElement text="slotted from ui to visual element 1"/>
-            </ui:VisualElement>
-            <GroundChild string_value="I'm groundchild at ui" int_value="2" >
-                <ui:TextElement text="slotted from ui to groundchild 2"/>
-            </GroundChild>
-        </Child>
-
-        <ui:TextElement name="" text="text from ui 2"/>
-    </ui:VisualElement>
+    <ui:TextElement name="" text="text from ui 2"/>
 </ui:UXML>

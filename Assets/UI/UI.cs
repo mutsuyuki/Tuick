@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,11 +9,12 @@ public class UI : BaseElement
     public UI()
     {
         titleLabel = contentContainer.Q<Label>("title");
-        titleLabel.text = Store.Instance.Name;
-
-        Store.Instance
-            .ObserveEveryValueChanged(v => v.Name)
-            .Subscribe(v => titleLabel.text = v);
+        if (titleLabel == null)
+        {
+            Debug.Log("titleLabel is null");
+            return;
+        }
+        titleLabel.text = "first state";
 
         titleLabel.RegisterCallback<PointerDownEvent>(OnPointerDown);
     }
@@ -25,6 +25,6 @@ public class UI : BaseElement
 
     private void OnPointerDown(PointerDownEvent e)
     {
-        Store.Instance.setName("changed_name");
+        titleLabel.text = "second state";
     }
 }

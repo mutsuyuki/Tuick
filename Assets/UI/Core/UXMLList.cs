@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-[CreateAssetMenu(menuName = "UXMLList", fileName = "UXMLList")]
+[CreateAssetMenu(menuName = "UI/List/UXMLList", fileName = "UXMLList")]
 public class UXMLList : ScriptableObject
 {
     [SerializeField] private VisualTreeAsset[] uxmlList;

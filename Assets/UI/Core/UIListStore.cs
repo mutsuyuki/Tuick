@@ -47,7 +47,7 @@ public class UIListStore
         }
     }
 
-    private void Initialize()
+    private async void Initialize()
     {
 #if UNITY_EDITOR
         // Resourcesフォルダのパスを取得
@@ -97,12 +97,17 @@ public class UIListStore
 
         // 管理ファイルを更新
         AssetDatabase.Refresh();
-
-        uxmlListData = Resources.Load<UXMLList>(nameof(UXMLList));
+        await Task.Delay(1000);
+        Refresh();
+        await Task.Delay(1000);
         uxmlListData.LoadUXMLAssets();
-        ussListData = Resources.Load<USSList>(nameof(USSList));
         ussListData.LoadUSSAssets();
 #endif
+        Refresh();
+    }
+
+    public void Refresh()
+    {
         uxmlListData = Resources.Load<UXMLList>(nameof(UXMLList));
         ussListData = Resources.Load<USSList>(nameof(USSList));
         if (uxmlListData == null || ussListData == null)

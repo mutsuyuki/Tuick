@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-[CreateAssetMenu(menuName = "USSList", fileName = "USSList")]
+[CreateAssetMenu(menuName = "UI/List/USSList", fileName = "USSList")]
 public class USSList : ScriptableObject
 {
     [SerializeField] private StyleSheet[] ussList;

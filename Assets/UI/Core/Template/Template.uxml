@@ -5,13 +5,12 @@
         xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
         class="root"
 >
-    <ui:Label name="title" class="bbb" text="I am GroundChild Label"/>
+
+    <ui:Label name="title" class="title" text="Title"/>
     <ui:VisualElement class="contents">
-        <ui:TextElement text="text from groundchild1"/>
+        <ui:Label name="value" class="value" text=""/>
         <ui:VisualElement class="slot_container">
             <Slot/>
         </ui:VisualElement>
-        <ui:TextElement text="text from groundchild2"/>
-        <ui:Image style="--unity-image: url('/Assets/UI/Images/heart.svg');"/>
     </ui:VisualElement>
 </ui:UXML>

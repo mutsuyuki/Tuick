@@ -25,6 +25,11 @@ public class BaseElement : VisualElement
         // インスタンスID決定
         instanceId = ObjectIdFactory.instance.GetNewId();
 
+        // エディタ上だと更新された状態のリストが取れないのでファイルを再度読み込む
+#if UNITY_EDITOR
+        UIListStore.Instance.Refresh();
+#endif
+
         // テンプレート読み込み
         UXMLList uxmlList = UIListStore.Instance.GetUXMLList();
         templateContainer = uxmlList.GetTemplate(GetType().Name);
@@ -34,7 +39,7 @@ public class BaseElement : VisualElement
         templateContainer.AddToClassList(GetType().ToString());
         SetClassNameRecursive(templateContainer);
 
-        // テンプレート読み込み
+        // スタイルシート読み込み
         USSList ussList = UIListStore.Instance.GetUSSList();
         StyleSheet styleSheet = ussList.GetTemplate(GetType().Name);
         templateContainer.styleSheets.Add(styleSheet);
