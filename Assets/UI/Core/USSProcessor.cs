@@ -75,7 +75,7 @@ public class USSProcessor
     // クラスを付与する
     public static string addClass(string property, string className)
     {
-        var regex = new Regex(@"([a-z0-9_]+)", RegexOptions.IgnoreCase);
+        var regex = new Regex(@"([a-z0-9_-]+)", RegexOptions.IgnoreCase);
         List<string> tokens = SplitString(property);
         string modifiedSelector = "";
         foreach (var token in tokens)
@@ -93,7 +93,7 @@ public class USSProcessor
     // クラス名やタグ名とそれ以外に分離した配列に
     public static List<string> SplitString(string input)
     {
-        var regex = new Regex(@"([a-z0-9_]+|[^a-z0-9_]+)", RegexOptions.IgnoreCase);
+        var regex = new Regex(@"([a-z0-9_-]+|[^a-z0-9_-]+)", RegexOptions.IgnoreCase);
         var matches = regex.Matches(input);
 
         var results = new List<string>();
