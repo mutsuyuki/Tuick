@@ -9,22 +9,6 @@
     color: white;
 }
 
-.contents {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: stretch;
-}
-
-.contents > * {
-    flex-grow: 1;
-}
-
-.slot_container {
-    border-width: 1px;
-    border-color: rgb(200, 200, 200);
-    padding: 8px;
-}
-
 Label {
     background-color: var(--background-color__GroundChild);
     border-color: rgb(200, 200, 100);
@@ -33,7 +17,21 @@ Label {
     padding: 8px;
 }
 
+.contents {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.slot_container {
+    flex-grow: 1;
+    border-width: 1px;
+    border-color: rgb(100, 200, 200);
+    padding: 8px;
+}
+
 TextElement {
+    flex-grow: 1;
     background-color: var(--background-color__GroundChild);
     border-color: rgb(200, 200, 200);
     border-width: 1px;
@@ -44,4 +42,6 @@ TextElement {
 Image {
     border-color: white;
     border-width: 1px;
+    width: 45px;
+    height: 45px;
 }

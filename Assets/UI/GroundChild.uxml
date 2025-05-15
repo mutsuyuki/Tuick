@@ -12,6 +12,6 @@
             <Slot/>
         </ui:VisualElement>
         <ui:TextElement text="text from groundchild2"/>
-        <ui:Image style="--unity-image: url('/Assets/UI/Images/heart.svg');"/>
+        <ui:Image style="--unity-image: url('/Assets/UI/Images/heart.png');"/>
     </ui:VisualElement>
 </ui:UXML>
