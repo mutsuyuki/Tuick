@@ -1,13 +1,12 @@
 #if UNITY_EDITOR
 
 using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-
-public  class Importer : AssetPostprocessor
+namespace Tuick
+{
+public class Importer : AssetPostprocessor
 {
     private static void OnPostprocessAllAssets(
         string[] importedAssets,
@@ -78,6 +77,7 @@ public  class Importer : AssetPostprocessor
             AssetDatabase.Refresh();
         }
     }
+}
 }
 
 #endif

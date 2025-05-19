@@ -2,7 +2,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-
+namespace Tuick
+{
 public class BaseElement : VisualElement
 {
     protected string instanceId { get; }
@@ -47,16 +48,17 @@ public class BaseElement : VisualElement
             return;
         }
 
-        templateContainer = uxmlList.GetTemplate(GetType().Name);
+        string fullTypeName = GetType().FullName;
+        templateContainer = uxmlList.GetTemplate(fullTypeName);
         if (templateContainer == null)
         {
-            Debug.LogError($"[{GetType().Name} ({instanceId})] Failed to load UXML template for '{GetType().Name}'. Check if UXML file exists and is correctly named in UXMLList.");
+            Debug.LogError($"[{GetType().Name} ({instanceId})] Failed to load UXML template for '{fullTypeName}'. Check if UXML file exists and is correctly named in UXMLList.");
             return;
         }
         Add(templateContainer); // テンプレートを自身に追加
 
         // 疑似scopedにするために、全elementにクラスを付与
-        templateContainer.AddToClassList(GetType().ToString());
+        templateContainer.AddToClassList(GetType().Name);
         SetClassNameRecursive(templateContainer);
 
         // スタイルシート読み込み
@@ -67,10 +69,10 @@ public class BaseElement : VisualElement
         }
         else
         {
-            StyleSheet styleSheet = ussList.GetTemplate(GetType().Name);
+            StyleSheet styleSheet = ussList.GetTemplate(fullTypeName);
             if (styleSheet == null)
             {
-                Debug.LogWarning($"[{GetType().Name} ({instanceId})] StyleSheet for '{GetType().Name}' not found. Check if USS file exists and is correctly named in USSList.");
+                Debug.LogWarning($"[{GetType().Name} ({instanceId})] StyleSheet for '{fullTypeName}' not found. Check if USS file exists and is correctly named in USSList.");
             }
             else
             {
@@ -111,7 +113,7 @@ public class BaseElement : VisualElement
             if (isCustomElement && (!hasTemplate || !hasSlotTarget))
                 continue;
 
-            child.AddToClassList(GetType().ToString());
+            child.AddToClassList(GetType().Name);
             child.AddToClassList(instanceId);
             SetClassNameRecursive(child);
         }
@@ -162,4 +164,5 @@ public class BaseElement : VisualElement
 
         slot.parent.Remove(slot);
     }
+}
 }

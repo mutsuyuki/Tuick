@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-
+namespace Tuick
+{
 public class USSProcessor
 {
     public static void DeployAll()
@@ -105,6 +106,7 @@ public class USSProcessor
         return results;
     }
 
+}
 }
 
 #endif

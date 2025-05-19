@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
+namespace Tuick
+{
 public class CreateComponent
 {
     [MenuItem("Assets/Create/UI/Component", false, 50)]
@@ -107,6 +109,7 @@ public class CreateComponent
             Debug.Log($"CreateComponent: Updating UXML/USS lists after creating '{nameUpper}'.");
         };
     }
+}
 }
 
 #endif

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
+namespace Tuick
+{
 [CreateAssetMenu(menuName = "UI/List/USSList", fileName = "USSList")]
 public class USSList : ScriptableObject
 {
@@ -16,11 +18,16 @@ public class USSList : ScriptableObject
         return ussList;
     }
 
-    public StyleSheet GetTemplate(string name)
+    public StyleSheet GetTemplate(string fullTypeName)
     {
+        // Extract the class name from the fully qualified name (e.g., "Tuick.MyComponent" -> "MyComponent")
+        string className = fullTypeName.Contains(".") ? 
+            fullTypeName.Substring(fullTypeName.LastIndexOf('.') + 1) : 
+            fullTypeName;
+
         for (int i = 0; i < ussList.Length; i++)
         {
-            if (ussList[i].name == name)
+            if (ussList[i].name == className)
             {
                 return ussList[i];
             }
@@ -43,8 +50,9 @@ public class USSList : ScriptableObject
         for (int i = 0; i < paths.Count; i++)
         {
             ussList[i] = AssetDatabase.LoadAssetAtPath<StyleSheet>(paths[i]);
-            
+
         }
     }
 #endif
+}
 }

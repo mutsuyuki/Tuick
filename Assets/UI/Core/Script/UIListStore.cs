@@ -5,6 +5,8 @@ using System.IO;
 using UnityEditor;
 #endif
 
+namespace Tuick
+{
 public class UIListStore
 {
     // uxmlリストデータ
@@ -128,4 +130,5 @@ public class UIListStore
             Debug.LogError("UIListStore: UXMLList or USSList object not found in Resources folder. UI System may not function correctly.");
         }
     }
+}
 }

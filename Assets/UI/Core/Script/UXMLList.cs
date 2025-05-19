@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
+namespace Tuick
+{
 [CreateAssetMenu(menuName = "UI/List/UXMLList", fileName = "UXMLList")]
 public class UXMLList : ScriptableObject
 {
@@ -16,11 +18,16 @@ public class UXMLList : ScriptableObject
         return uxmlList;
     }
 
-    public TemplateContainer GetTemplate(string name)
+    public TemplateContainer GetTemplate(string fullTypeName)
     {
+        // Extract the class name from the fully qualified name (e.g., "Tuick.MyComponent" -> "MyComponent")
+        string className = fullTypeName.Contains(".") ? 
+            fullTypeName.Substring(fullTypeName.LastIndexOf('.') + 1) : 
+            fullTypeName;
+
         for (int i = 0; i < uxmlList.Length; i++)
         {
-            if (uxmlList[i].name == name)
+            if (uxmlList[i].name == className)
             {
                 return uxmlList[i].CloneTree();
             }
@@ -45,4 +52,5 @@ public class UXMLList : ScriptableObject
         }
     }
 #endif
+}
 }

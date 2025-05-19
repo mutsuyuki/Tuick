@@ -3,7 +3,8 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-
+namespace Tuick
+{
 public class ComponentNameInput : PopupWindowContent
 {
     private const float WINDOW_PADDING = 16.0f;
@@ -119,5 +120,6 @@ public class ComponentNameInput : PopupWindowContent
     }
 
     public override Vector2 GetWindowSize() => _windowSize;
+}
 }
 #endif

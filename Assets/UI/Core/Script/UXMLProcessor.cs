@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
-
+namespace Tuick
+{
 public class UXMLProcessor
 {
     public static void DeployAll()
@@ -28,5 +29,6 @@ public class UXMLProcessor
         string savePath = Path.Combine(PathUtil.GetUXMLDirPath(), fileName);
         File.WriteAllText(savePath, content);
     }
+}
 }
 #endif

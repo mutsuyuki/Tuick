@@ -4,7 +4,8 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-
+namespace Tuick
+{
 public class PathUtil : AssetPostprocessor
 {
     // ライブラリのルートパスのキャッシュ
@@ -279,6 +280,7 @@ public class PathUtil : AssetPostprocessor
         }
         return paths;
     }
+}
 }
 
 #endif
