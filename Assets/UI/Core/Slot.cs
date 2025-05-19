@@ -1,8 +1,6 @@
 using UnityEngine.UIElements;
 
-public class Slot : VisualElement
+[UxmlElement]
+public partial class Slot : VisualElement
 {
-    public new class UxmlFactory : UxmlFactory<Slot, UxmlTraits>
-    {
-    }
 }
