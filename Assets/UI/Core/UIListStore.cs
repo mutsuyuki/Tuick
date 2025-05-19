@@ -8,11 +8,6 @@ using UnityEditor;
 
 public class UIListStore
 {
-    // プライベートコンストラクタ
-    private UIListStore()
-    {
-    }
-
     // uxmlリストデータ
     private UXMLList uxmlListData;
 
@@ -29,10 +24,9 @@ public class UIListStore
         return ussListData;
     }
 
-
     // シングルトン化
+    private UIListStore() {}
     private static UIListStore _instance;
-
     public static UIListStore Instance
     {
         get
@@ -55,43 +49,59 @@ public class UIListStore
 
         // umxl管理ファイルがない場合は作る
         string uxmlListPath = Path.Combine(saveDir, nameof(UXMLList)) + ".asset";
-        if (!AssetDatabase.LoadAssetAtPath<UXMLList>(uxmlListPath))
+        UXMLList localUxmlListData = AssetDatabase.LoadAssetAtPath<UXMLList>(uxmlListPath);
+        bool uxmlCreationSuccess = true;
+
+        if (localUxmlListData == null)
         {
-            UXMLList uxmlListData = UXMLList.CreateInstance<UXMLList>();
+            localUxmlListData = UXMLList.CreateInstance<UXMLList>();
+            uxmlCreationSuccess = false;
 
             try
             {
                 // uxmlファイルをコピー
                 UXMLProcessor.DeployAll();
                 // 管理ファイルを作成
-                AssetDatabase.CreateAsset(uxmlListData, uxmlListPath);
+                AssetDatabase.CreateAsset(localUxmlListData, uxmlListPath);
+                AssetDatabase.SaveAssets(); // アセットの保存を明示的に行う
+                Debug.Log($"Successfully created UXMLList asset at: {uxmlListPath}");
+                uxmlCreationSuccess = true;
             }
             catch (System.Exception e)
             {
-                // アセット作成直後のインポートでエラーが起きるが、実際には作成されててロードもできるので、とりあえず無視する。
-                Debug.Log("please ignore this error if import uxml file correctly.");
-                Debug.Log(e.Message);
+                // 詳細なエラーメッセージを出力
+                Debug.LogErrorFormat("Error creating UXMLList asset at '{0}': {1}\nStackTrace: {2}", uxmlListPath, e.Message, e.StackTrace);
+                // エラーが発生した場合は変数をnullに設定
+                localUxmlListData = null;
             }
         }
 
         // uss管理ファイルがない場合は作る
         string ussListPath = Path.Combine(saveDir, nameof(USSList)) + ".asset";
-        if (!AssetDatabase.LoadAssetAtPath<USSList>(ussListPath))
+        USSList localUssListData = AssetDatabase.LoadAssetAtPath<USSList>(ussListPath);
+        bool ussCreationSuccess = true;
+
+        if (localUssListData == null)
         {
-            USSList ussListData = USSList.CreateInstance<USSList>();
+            localUssListData = USSList.CreateInstance<USSList>();
+            ussCreationSuccess = false;
 
             try
             {
                 // ussファイルをローカライズしてコピー
                 USSProcessor.DeployAll();
                 // 管理ファイルを作成
-                AssetDatabase.CreateAsset(ussListData, ussListPath);
+                AssetDatabase.CreateAsset(localUssListData, ussListPath);
+                AssetDatabase.SaveAssets(); // アセットの保存を明示的に行う
+                Debug.Log($"Successfully created USSList asset at: {ussListPath}");
+                ussCreationSuccess = true;
             }
             catch (System.Exception e)
             {
-                // アセット作成直後のインポートでエラーが起きるが、実際には作成されててロードもできるので、とりあえず無視する。
-                Debug.Log("please ignore this error if import uss file correctly.");
-                Debug.Log(e.Message);
+                // 詳細なエラーメッセージを出力
+                Debug.LogErrorFormat("Error creating USSList asset at '{0}': {1}\nStackTrace: {2}", ussListPath, e.Message, e.StackTrace);
+                // エラーが発生した場合は変数をnullに設定
+                localUssListData = null;
             }
         }
 
@@ -100,8 +110,25 @@ public class UIListStore
         await Task.Delay(1000);
         Refresh();
         await Task.Delay(1000);
-        uxmlListData.LoadUXMLAssets();
-        ussListData.LoadUSSAssets();
+
+        // アセットのロードが成功したか確認してから処理を続行
+        if (_instance.uxmlListData != null)
+        {
+            _instance.uxmlListData.LoadUXMLAssets();
+        }
+        else if (!uxmlCreationSuccess)
+        {
+            Debug.LogWarning($"UXMLList asset could not be loaded or created at: {uxmlListPath}");
+        }
+
+        if (_instance.ussListData != null)
+        {
+            _instance.ussListData.LoadUSSAssets();
+        }
+        else if (!ussCreationSuccess)
+        {
+            Debug.LogWarning($"USSList asset could not be loaded or created at: {ussListPath}");
+        }
 #endif
         Refresh();
     }
