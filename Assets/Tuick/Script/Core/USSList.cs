@@ -43,13 +43,33 @@ namespace Tuick
 			LoadUSSAssets(PathUtil.GetUSSDirPath());
 		}
 
-		public void LoadUSSAssets(string directoryPath)
+ 	public void LoadUSSAssets(string directoryPath)
 		{
 			List<string> paths = PathUtil.SearchDeployedUSSPaths();
-			ussList = new StyleSheet[paths.Count];
+			List<StyleSheet> validStyles = new List<StyleSheet>();
+
 			for (int i = 0; i < paths.Count; i++)
 			{
-				ussList[i] = AssetDatabase.LoadAssetAtPath<StyleSheet>(paths[i]);
+				StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(paths[i]);
+				if (styleSheet != null)
+				{
+					validStyles.Add(styleSheet);
+				}
+				else
+				{
+					Debug.LogWarning($"Failed to load USS asset at path: {paths[i]}. It may have been deleted.");
+				}
+			}
+
+			ussList = validStyles.ToArray();
+
+			if (paths.Count > 0 && validStyles.Count == 0)
+			{
+				Debug.LogWarning("No valid USS assets found in the deployed directory.");
+			}
+			else if (paths.Count > validStyles.Count)
+			{
+				Debug.Log($"Filtered out {paths.Count - validStyles.Count} invalid USS assets.");
 			}
 		}
 #endif

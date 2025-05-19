@@ -43,13 +43,33 @@ namespace Tuick
 			LoadUXMLAssets(PathUtil.GetUXMLDirPath());
 		}
 
-		public void LoadUXMLAssets(string directoryPath)
+ 	public void LoadUXMLAssets(string directoryPath)
 		{
 			List<string> paths = PathUtil.SearchDeployedUXMLPaths();
-			uxmlList = new VisualTreeAsset[paths.Count];
+			List<VisualTreeAsset> validAssets = new List<VisualTreeAsset>();
+
 			for (int i = 0; i < paths.Count; i++)
 			{
-				uxmlList[i] = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(paths[i]);
+				VisualTreeAsset asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(paths[i]);
+				if (asset != null)
+				{
+					validAssets.Add(asset);
+				}
+				else
+				{
+					Debug.LogWarning($"Failed to load UXML asset at path: {paths[i]}. It may have been deleted.");
+				}
+			}
+
+			uxmlList = validAssets.ToArray();
+
+			if (paths.Count > 0 && validAssets.Count == 0)
+			{
+				Debug.LogWarning("No valid UXML assets found in the deployed directory.");
+			}
+			else if (paths.Count > validAssets.Count)
+			{
+				Debug.Log($"Filtered out {paths.Count - validAssets.Count} invalid UXML assets.");
 			}
 		}
 #endif
