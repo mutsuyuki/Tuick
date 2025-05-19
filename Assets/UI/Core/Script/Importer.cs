@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -72,16 +73,9 @@ public  class Importer : AssetPostprocessor
             }
         }
 
-        // エディタの再描画時に画像が消えないようにリロード
-        if (isUXMLChanged || isUSSChanged)
-        {
-            var uiDocuments = Resources.FindObjectsOfTypeAll<UIDocument>();
-            for (int i = 0; i < uiDocuments.Length; i++)
-            {
-                var originalState = uiDocuments[i].enabled;
-                uiDocuments[i].enabled = false;
-                uiDocuments[i].enabled = originalState;
-            }
+        // 変更が即時反映されるようにする
+        if (isUXMLChanged || isUSSChanged) {
+            AssetDatabase.Refresh();
         }
     }
 }

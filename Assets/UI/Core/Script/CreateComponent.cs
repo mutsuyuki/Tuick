@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using System.Threading.Tasks;
 
 public class CreateComponent
 {
@@ -19,12 +18,19 @@ public class CreateComponent
         );
     }
 
-    private static async void CopyTemplates(string name)
+    private static void CopyTemplates(string name)
     {
-        if (name == "")
+        if (string.IsNullOrEmpty(name))
             return;
 
-        string srcPath = Path.Combine(PathUtil.GetLibRootPath(), "Template");
+        string srcPath = PathUtil.GetLibRootPath();
+        if (string.IsNullOrEmpty(srcPath))
+        {
+            Debug.LogError("CreateComponent: Could not determine library root path. Component creation aborted.");
+            return;
+        }
+        srcPath = Path.Combine(srcPath, "Template");
+
         string distPath = AssetDatabase.GetAssetPath(Selection.activeObject);
         if (string.IsNullOrEmpty(distPath))
         {
@@ -32,41 +38,74 @@ public class CreateComponent
         }
         else if (Path.GetExtension(distPath) != "")
         {
-            distPath = distPath.Replace(Path.GetFileName(distPath), "");
+            distPath = Path.GetDirectoryName(distPath);
         }
 
         // name最初の１文字を大文字に
-        string nameUpper = name.Substring(0, 1).ToUpper() + name.Substring(1);
+        string nameUpper = char.ToUpper(name[0]) + name.Substring(1);
 
-        // uxmlファイルはコピーのみ
-        string srcUXMLPath = Path.Combine(srcPath, "Template.uxml");
-        string distUXMLPath = Path.Combine(distPath, nameUpper + ".uxml");
-        File.Copy(srcUXMLPath, distUXMLPath, false);
+        // ビルドプロセスを開始
+        AssetDatabase.StartAssetEditing();
+        try
+        {
+            // uxmlファイルはコピーのみ
+            string srcUXMLPath = Path.Combine(srcPath, "Template.uxml");
+            string distUXMLPath = Path.Combine(distPath, nameUpper + ".uxml");
+            if (File.Exists(srcUXMLPath))
+            {
+                File.Copy(srcUXMLPath, distUXMLPath, false);
+                AssetDatabase.ImportAsset(distUXMLPath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+            }
+            else
+            {
+                Debug.LogError($"CreateComponent: Template UXML file not found at {srcUXMLPath}");
+            }
 
-        // ussファイルは名前を使って内容書き換え
-        string srcUSSPath = Path.Combine(srcPath, "Template.uss");
-        string distUSSPath = Path.Combine(distPath, nameUpper + ".uss");
-        string contentUSS = File.ReadAllText(srcUSSPath);
-        contentUSS = contentUSS.Replace("Template", nameUpper);
-        File.WriteAllText(distUSSPath, contentUSS);
+            // ussファイルは名前を使って内容書き換え
+            string srcUSSPath = Path.Combine(srcPath, "Template.uss");
+            string distUSSPath = Path.Combine(distPath, nameUpper + ".uss");
+            if (File.Exists(srcUSSPath))
+            {
+                string contentUSS = File.ReadAllText(srcUSSPath);
+                contentUSS = contentUSS.Replace("Template", nameUpper);
+                File.WriteAllText(distUSSPath, contentUSS);
+                AssetDatabase.ImportAsset(distUSSPath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+            }
+            else
+            {
+                Debug.LogError($"CreateComponent: Template USS file not found at {srcUSSPath}");
+            }
 
-        // アセットデータベースを更新
-        AssetDatabase.Refresh();
-        await Task.Delay(1);
+            // csファイルはクラス名を書き換え
+            string srcCSharpPath = Path.Combine(srcPath, "Template.cs");
+            string distCSharpPath = Path.Combine(distPath, nameUpper + ".cs");
+            if (File.Exists(srcCSharpPath))
+            {
+                string contentCSharp = File.ReadAllText(srcCSharpPath);
+                contentCSharp = contentCSharp.Replace("Template", nameUpper);
+                File.WriteAllText(distCSharpPath, contentCSharp);
+                AssetDatabase.ImportAsset(distCSharpPath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+            }
+            else
+            {
+                Debug.LogError($"CreateComponent: Template C# file not found at {srcCSharpPath}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"CreateComponent: Error during template copying for '{nameUpper}'. Exception: {e}");
+        }
+        finally
+        {
+            AssetDatabase.StopAssetEditing(); // アセット操作を終了し、インポートをトリガー
+        }
 
-        // uxml,ussのリストを更新
-        Resources.Load<UXMLList>(nameof(UXMLList)).LoadUXMLAssets();
-        Resources.Load<USSList>(nameof(USSList)).LoadUSSAssets();
-        AssetDatabase.Refresh();
-        await Task.Delay(1);
-
-        // csファイルはクラス名を書き換え
-        string srcCSharpPath = Path.Combine(srcPath, "Template.cs");
-        string distCSharpPath = Path.Combine(distPath, nameUpper + ".cs");
-        string contentCSharp = File.ReadAllText(srcCSharpPath);
-        contentCSharp = contentCSharp.Replace("Template", nameUpper);
-        File.WriteAllText(distCSharpPath, contentCSharp);
-        AssetDatabase.Refresh();
+        // uxml,ussのリストを更新 (次のエディタフレームで実行)
+        EditorApplication.delayCall += () =>
+        {
+            UIListStore.Instance.Refresh();
+            Debug.Log($"CreateComponent: Updating UXML/USS lists after creating '{nameUpper}'.");
+        };
     }
 }
 

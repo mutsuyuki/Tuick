@@ -19,21 +19,41 @@ public class BaseElement : VisualElement
     }
 
     private TemplateContainer templateContainer;
+    private bool visualsInitialized;
 
     public BaseElement()
     {
         // インスタンスID決定
         instanceId = ObjectIdFactory.instance.GetNewId();
 
-        // エディタ上だと更新された状態のリストが取れないのでファイルを再度読み込む
-#if UNITY_EDITOR
-        UIListStore.Instance.Refresh();
-#endif
+        // イベント登録
+        RegisterCallback<AttachToPanelEvent>(OnElementAttached);
+        RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+    }
+
+    protected virtual void OnElementAttached(AttachToPanelEvent e)
+    {
+        // 初期化済みかtemplateContainerが何らかの理由で既に存在する場合はスキップ
+        if (visualsInitialized || templateContainer != null)
+        {
+            return;
+        }
 
         // テンプレート読み込み
         UXMLList uxmlList = UIListStore.Instance.GetUXMLList();
+        if (uxmlList == null)
+        {
+            Debug.LogError($"[{GetType().Name} ({instanceId})] UXMLList is null. UIListStore might not be initialized or UXMLList asset is missing. Template cannot be loaded.");
+            return;
+        }
+
         templateContainer = uxmlList.GetTemplate(GetType().Name);
-        Add(templateContainer);
+        if (templateContainer == null)
+        {
+            Debug.LogError($"[{GetType().Name} ({instanceId})] Failed to load UXML template for '{GetType().Name}'. Check if UXML file exists and is correctly named in UXMLList.");
+            return;
+        }
+        Add(templateContainer); // テンプレートを自身に追加
 
         // 疑似scopedにするために、全elementにクラスを付与
         templateContainer.AddToClassList(GetType().ToString());
@@ -41,28 +61,35 @@ public class BaseElement : VisualElement
 
         // スタイルシート読み込み
         USSList ussList = UIListStore.Instance.GetUSSList();
-        StyleSheet styleSheet = ussList.GetTemplate(GetType().Name);
-        templateContainer.styleSheets.Add(styleSheet);
+        if (ussList == null)
+        {
+            Debug.LogWarning($"[{GetType().Name} ({instanceId})] USSList is null. UIListStore might not be initialized or USSList asset is missing. Stylesheet cannot be loaded.");
+        }
+        else
+        {
+            StyleSheet styleSheet = ussList.GetTemplate(GetType().Name);
+            if (styleSheet == null)
+            {
+                Debug.LogWarning($"[{GetType().Name} ({instanceId})] StyleSheet for '{GetType().Name}' not found. Check if USS file exists and is correctly named in USSList.");
+            }
+            else
+            {
+                // templateContainer (UXMLのルート) にスタイルシートを追加
+                templateContainer.styleSheets.Add(styleSheet);
+            }
+        }
 
-        // イベント登録
-        RegisterCallback<AttachToPanelEvent>(e => OnAttach(e));
-        RegisterCallback<GeometryChangedEvent>(e => OnGeometryChange(e));
-    }
-
-    protected virtual void OnAttach(AttachToPanelEvent e)
-    {
-        if (templateContainer == null)
-            return;
-
-        // 簡易Slot
+        // スロット処理
         var slot = SearchSlot(templateContainer);
         if (slot != null)
         {
             ReplaceSlot(slot);
         }
+
+        visualsInitialized = true;
     }
 
-    protected virtual void OnGeometryChange(GeometryChangedEvent e)
+    protected virtual void OnGeometryChanged(GeometryChangedEvent e)
     {
         // Debug.Log(GetType().Name + ":size changed");
     }
@@ -79,8 +106,8 @@ public class BaseElement : VisualElement
             // Slot対象のエレメントがある場合、そのエレメントだけは親のクラスにする
             var isCustomElement = child is BaseElement;
             var grandChilds = child.Children().ToList();
-            var hasTemplate = grandChilds.Where(v => v.GetType() != typeof(TemplateContainer)).Count() > 0;
-            var hasSlotTarget = grandChilds.Count() > 1;
+            var hasTemplate = grandChilds.Any(v => v.GetType() != typeof(TemplateContainer));
+            var hasSlotTarget = grandChilds.Count > 1;
             if (isCustomElement && (!hasTemplate || !hasSlotTarget))
                 continue;
 
@@ -99,9 +126,9 @@ public class BaseElement : VisualElement
             if (isCustomElement)
                 continue;
 
-            if (child.GetType() == typeof(Slot))
+            if (child is Slot typedSlot)
             {
-                return child as Slot;
+                return typedSlot;
             }
 
             var slot = SearchSlot(child);
@@ -110,15 +137,17 @@ public class BaseElement : VisualElement
                 return slot;
             }
         }
-
         return null;
     }
 
     // 挟んだElementでSlotを置換
     private void ReplaceSlot(Slot slot)
     {
-        var slotIndex = slot.parent.Children().ToList().IndexOf(slot);
+        // slotがツリーにない場合は何もしない
+        if (slot.parent == null) 
+            return; 
 
+        var slotIndex = slot.parent.IndexOf(slot);
         var moveTargets
             = Children()
                 .Where(v => v.GetType() != typeof(TemplateContainer))
