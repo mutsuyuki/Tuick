@@ -8,19 +8,19 @@ namespace Tuick.Core
 	public class CreateComponent
 	{
 		[MenuItem("Assets/Create/Tuick/Component", false, 50)]
-		public static void CreateComponentMenu()
-		{
-			ComponentNameInput.Show(
-				new Vector2(100, 100),
-				"",
-				x => { },
-				(x) => CopyTemplates(x),
-				"Enter the name for\nthe new UI Component.",
-				300
-			);
-		}
+ 	public static void CreateComponentMenu()
+ 	{
+ 		ComponentNameInput.Show(
+ 			new Vector2(100, 100),
+ 			"",
+ 			x => { },
+ 			(name, createFolder) => CopyTemplates(name, createFolder),
+ 			"Enter the name for\nthe new UI Component.",
+ 			300
+ 		);
+ 	}
 
-		private static void CopyTemplates(string name)
+ 	private static void CopyTemplates(string name, bool createFolder)
 		{
 			if (string.IsNullOrEmpty(name))
 				return;
@@ -34,18 +34,30 @@ namespace Tuick.Core
 
 			srcPath = Path.Combine(srcPath, "Template");
 
-			string distPath = AssetDatabase.GetAssetPath(Selection.activeObject);
-			if (string.IsNullOrEmpty(distPath))
-			{
-				distPath = "Assets";
-			}
-			else if (Path.GetExtension(distPath) != "")
-			{
-				distPath = Path.GetDirectoryName(distPath);
-			}
+ 		string distPath = AssetDatabase.GetAssetPath(Selection.activeObject);
+ 		if (string.IsNullOrEmpty(distPath))
+ 		{
+ 			distPath = "Assets";
+ 		}
+ 		else if (Path.GetExtension(distPath) != "")
+ 		{
+ 			distPath = Path.GetDirectoryName(distPath);
+ 		}
 
-			// name最初の１文字を大文字に
-			string nameUpper = char.ToUpper(name[0]) + name.Substring(1);
+ 		// name最初の１文字を大文字に
+ 		string nameUpper = char.ToUpper(name[0]) + name.Substring(1);
+
+ 		// If createFolder is true, create a subdirectory with the same name as the component
+ 		string finalDistPath = distPath;
+ 		if (createFolder)
+ 		{
+ 			finalDistPath = Path.Combine(distPath, nameUpper);
+ 			if (!Directory.Exists(finalDistPath))
+ 			{
+ 				Directory.CreateDirectory(finalDistPath);
+ 				AssetDatabase.Refresh(); // Refresh AssetDatabase to recognize the new directory
+ 			}
+ 		}
 
 			// ビルドプロセスを開始
 			AssetDatabase.StartAssetEditing();
@@ -53,7 +65,7 @@ namespace Tuick.Core
 			{
 				// uxmlファイルはコピーのみ
 				string srcUXMLPath = Path.Combine(srcPath, "Template.uxml");
-				string distUXMLPath = Path.Combine(distPath, nameUpper + ".uxml");
+				string distUXMLPath = Path.Combine(finalDistPath, nameUpper + ".uxml");
 				if (File.Exists(srcUXMLPath))
 				{
 					File.Copy(srcUXMLPath, distUXMLPath, false);
@@ -67,7 +79,7 @@ namespace Tuick.Core
 
 				// ussファイルは名前を使って内容書き換え
 				string srcUSSPath = Path.Combine(srcPath, "Template.uss");
-				string distUSSPath = Path.Combine(distPath, nameUpper + ".uss");
+				string distUSSPath = Path.Combine(finalDistPath, nameUpper + ".uss");
 				if (File.Exists(srcUSSPath))
 				{
 					string contentUSS = File.ReadAllText(srcUSSPath);
@@ -83,7 +95,7 @@ namespace Tuick.Core
 
 				// csファイルはクラス名を書き換え
 				string srcCSharpPath = Path.Combine(srcPath, "Template.cs");
-				string distCSharpPath = Path.Combine(distPath, nameUpper + ".cs");
+				string distCSharpPath = Path.Combine(finalDistPath, nameUpper + ".cs");
 				if (File.Exists(srcCSharpPath))
 				{
 					string contentCSharp = File.ReadAllText(srcCSharpPath);

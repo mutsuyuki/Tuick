@@ -13,40 +13,41 @@ namespace Tuick.Core
 		private const float BUTTON_HORIZONTAL_SPACING_MULTIPLIER = 1f; // Multiplier for horizontal button spacing
 		private const float BUTTON_HEIGHT_MULTIPLIER = 2f; // Multiplier for button height
 
-		private string _text;
-		private string _message;
-		private float _width;
-		private Action<string> _changed;
-		private Action<string> _closed;
-		private GUIStyle _messageLabelStyle;
-		private Vector2 _windowSize;
-		private bool _didFocus = false;
+ 	private string _text;
+ 	private string _message;
+ 	private float _width;
+ 	private Action<string> _changed;
+ 	private Action<string, bool> _closed; // Changed to include createFolder parameter
+ 	private GUIStyle _messageLabelStyle;
+ 	private Vector2 _windowSize;
+ 	private bool _didFocus = false;
+ 	private bool _createFolder = false; // Added to track checkbox state
 
 		private float ActualVerticalSpacing => EditorGUIUtility.standardVerticalSpacing * CUSTOM_VERTICAL_SPACING_MULTIPLIER;
 		private float ActualButtonHorizontalSpacing => BASE_BUTTON_SPACING * BUTTON_HORIZONTAL_SPACING_MULTIPLIER;
 		private float ActualButtonHeight => EditorGUIUtility.singleLineHeight * BUTTON_HEIGHT_MULTIPLIER;
 
-		public static void Show(
-			Vector2 position,
-			string text,
-			Action<string> changed,
-			Action<string> closed,
-			string message = null,
-			float width = 300
-		)
-		{
-			var rect = new Rect(position, Vector2.zero);
-			var content = new ComponentNameInput(text, changed, closed, message, width);
-			PopupWindow.Show(rect, content);
-		}
+ 	public static void Show(
+ 		Vector2 position,
+ 		string text,
+ 		Action<string> changed,
+ 		Action<string, bool> closed, // Changed to include createFolder parameter
+ 		string message = null,
+ 		float width = 300
+ 	)
+ 	{
+ 		var rect = new Rect(position, Vector2.zero);
+ 		var content = new ComponentNameInput(text, changed, closed, message, width);
+ 		PopupWindow.Show(rect, content);
+ 	}
 
-		private ComponentNameInput(
-			string text,
-			Action<string> changed,
-			Action<string> closed,
-			string message = null,
-			float width = 300
-		)
+ 	private ComponentNameInput(
+ 		string text,
+ 		Action<string> changed,
+ 		Action<string, bool> closed, // Changed to include createFolder parameter
+ 		string message = null,
+ 		float width = 300
+ 	)
 		{
 			_message = message;
 			_text = text;
@@ -70,7 +71,9 @@ namespace Tuick.Core
 				_windowSize.y += ActualVerticalSpacing; // Space after message
 			}
 			_windowSize.y += EditorGUIUtility.singleLineHeight; // TextField
-			_windowSize.y += ActualVerticalSpacing; // Space after TextField
+			_windowSize.y += EditorGUIUtility.standardVerticalSpacing; // Space before checkbox
+			_windowSize.y += EditorGUIUtility.singleLineHeight; // Checkbox
+			_windowSize.y += ActualVerticalSpacing; // Space after checkbox
 			_windowSize.y += ActualButtonHeight; // Buttons
 			_windowSize.y += WINDOW_PADDING; // Bottom padding
 		}
@@ -86,7 +89,7 @@ namespace Tuick.Core
 				)
 				{
 					editorWindow.Close();
-					_closed?.Invoke(_text);
+					_closed?.Invoke(_text, _createFolder);
 					Event.current.Use(); // Consume the event to prevent further processing
 				}
 
@@ -129,6 +132,14 @@ namespace Tuick.Core
 			GUILayout.FlexibleSpace(); // Add flexible space to the right to center the text field
 			EditorGUILayout.EndHorizontal();
 
+			// フォルダ作成チェックボックス
+			GUILayout.Space(EditorGUIUtility.standardVerticalSpacing); // TextFieldとの間に少しスペース
+			EditorGUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			_createFolder = EditorGUILayout.ToggleLeft("Create subdirectory for component", _createFolder, GUILayout.Width(_width - WINDOW_PADDING * 2));
+			GUILayout.FlexibleSpace();
+			EditorGUILayout.EndHorizontal();
+
 			GUILayout.Space(ActualVerticalSpacing); // Increased vertical spacing
 
 			// ボタンを描画
@@ -148,7 +159,7 @@ namespace Tuick.Core
 			if (GUILayout.Button("OK", GUILayout.Height(ActualButtonHeight), GUILayout.Width(buttonWidth)))
 			{
 				editorWindow.Close();
-				_closed?.Invoke(_text);
+				_closed?.Invoke(_text, _createFolder);
 			}
 
 			GUILayout.FlexibleSpace(); // Center the button group
