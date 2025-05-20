@@ -15,7 +15,7 @@ namespace Tuick.Core
 				"",
 				x => { },
 				(x) => CopyTemplates(x),
-				"Component name",
+				"Enter the name for\nthe new UI Component.",
 				300
 			);
 		}
