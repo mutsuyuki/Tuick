@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class USSProcessor
 	{

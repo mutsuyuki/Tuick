@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Tuick.Core;
 
 namespace Tuick
 {
@@ -29,10 +30,9 @@ namespace Tuick
 
 			// イベント登録
 			RegisterCallback<AttachToPanelEvent>(OnElementAttached);
-			RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 		}
 
-		protected virtual void OnElementAttached(AttachToPanelEvent e)
+		private void OnElementAttached(AttachToPanelEvent e)
 		{
 			// 初期化済みかtemplateContainerが何らかの理由で既に存在する場合はスキップ
 			if (visualsInitialized || templateContainer != null)
@@ -45,7 +45,8 @@ namespace Tuick
 			if (uxmlList == null)
 			{
 				Debug.LogError(
-					$"[{GetType().Name} ({instanceId})] UXMLList is null. UIListStore might not be initialized or UXMLList asset is missing. Template cannot be loaded.");
+					$"[{GetType().Name} ({instanceId})] UXMLList is null. UIListStore might not be initialized or UXMLList asset is missing. Template cannot be loaded."
+				);
 				return;
 			}
 
@@ -54,7 +55,8 @@ namespace Tuick
 			if (templateContainer == null)
 			{
 				Debug.LogError(
-					$"[{GetType().Name} ({instanceId})] Failed to load UXML template for '{fullTypeName}'. Check if UXML file exists and is correctly named in UXMLList.");
+					$"[{GetType().Name} ({instanceId})] Failed to load UXML template for '{fullTypeName}'. Check if UXML file exists and is correctly named in UXMLList."
+				);
 				return;
 			}
 
@@ -69,7 +71,8 @@ namespace Tuick
 			if (ussList == null)
 			{
 				Debug.LogWarning(
-					$"[{GetType().Name} ({instanceId})] USSList is null. UIListStore might not be initialized or USSList asset is missing. Stylesheet cannot be loaded.");
+					$"[{GetType().Name} ({instanceId})] USSList is null. UIListStore might not be initialized or USSList asset is missing. Stylesheet cannot be loaded."
+				);
 			}
 			else
 			{
@@ -77,7 +80,8 @@ namespace Tuick
 				if (styleSheet == null)
 				{
 					Debug.LogWarning(
-						$"[{GetType().Name} ({instanceId})] StyleSheet for '{fullTypeName}' not found. Check if USS file exists and is correctly named in USSList.");
+						$"[{GetType().Name} ({instanceId})] StyleSheet for '{fullTypeName}' not found. Check if USS file exists and is correctly named in USSList."
+					);
 				}
 				else
 				{
@@ -94,11 +98,6 @@ namespace Tuick
 			}
 
 			visualsInitialized = true;
-		}
-
-		protected virtual void OnGeometryChanged(GeometryChangedEvent e)
-		{
-			// Debug.Log(GetType().Name + ":size changed");
 		}
 
 		// 自Element内の各要素にクラス名を付与（疑似scoped cssのため）

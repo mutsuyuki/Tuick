@@ -2,11 +2,10 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class Importer : AssetPostprocessor
 	{

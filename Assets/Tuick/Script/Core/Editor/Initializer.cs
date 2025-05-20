@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	[InitializeOnLoad]
 	public static class Initializer

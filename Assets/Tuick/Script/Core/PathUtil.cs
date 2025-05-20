@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class PathUtil : AssetPostprocessor
 	{

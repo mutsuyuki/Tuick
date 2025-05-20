@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class UXMLProcessor
 	{

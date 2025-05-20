@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class CreateComponent
 	{

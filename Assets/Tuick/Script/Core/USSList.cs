@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-namespace Tuick
+namespace Tuick.Core
 {
 	[CreateAssetMenu(menuName = "UI/List/USSList", fileName = "USSList")]
 	public class USSList : ScriptableObject

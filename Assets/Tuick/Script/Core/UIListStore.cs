@@ -5,7 +5,7 @@ using System.IO;
 using UnityEditor;
 #endif
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class UIListStore
 	{

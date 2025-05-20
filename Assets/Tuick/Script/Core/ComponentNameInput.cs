@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-namespace Tuick
+namespace Tuick.Core
 {
 	public class ComponentNameInput : PopupWindowContent
 	{
