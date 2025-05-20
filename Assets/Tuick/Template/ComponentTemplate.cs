@@ -2,13 +2,13 @@ using UnityEngine.UIElements;
 using Tuick;
 
 [UxmlElement]
-public sealed partial class Template : BaseElement
+public sealed partial class ComponentTemplate : BaseElement
 {
 	private Label valueLabel;
 
-	[UxmlAttribute("value")] public int IntValue { get; set; } = 0;
+	[UxmlAttribute("value")] public int value { get; set; } = 0;
 
-	public Template()
+	public ComponentTemplate()
 	{
 		RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
 		RegisterCallback<PointerDownEvent>(OnPointerDown);
@@ -19,7 +19,7 @@ public sealed partial class Template : BaseElement
 		valueLabel = this.Q<Label>("value", instanceId);
 		if (valueLabel != null)
 		{
-			valueLabel.text = IntValue.ToString();
+			valueLabel.text = value.ToString();
 		}
 	}
 

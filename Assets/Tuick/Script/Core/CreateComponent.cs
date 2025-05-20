@@ -64,7 +64,7 @@ namespace Tuick.Core
 			try
 			{
 				// uxmlファイルはコピーのみ
-				string srcUXMLPath = Path.Combine(srcPath, "Template.uxml");
+				string srcUXMLPath = Path.Combine(srcPath, "ComponentTemplate.uxml");
 				string distUXMLPath = Path.Combine(finalDistPath, nameUpper + ".uxml");
 				if (File.Exists(srcUXMLPath))
 				{
@@ -74,39 +74,39 @@ namespace Tuick.Core
 				}
 				else
 				{
-					Debug.LogError($"CreateComponent: Template UXML file not found at {srcUXMLPath}");
+					Debug.LogError($"CreateComponent: ComponentTemplate UXML file not found at {srcUXMLPath}");
 				}
 
 				// ussファイルは名前を使って内容書き換え
-				string srcUSSPath = Path.Combine(srcPath, "Template.uss");
+				string srcUSSPath = Path.Combine(srcPath, "ComponentTemplate.uss");
 				string distUSSPath = Path.Combine(finalDistPath, nameUpper + ".uss");
 				if (File.Exists(srcUSSPath))
 				{
 					string contentUSS = File.ReadAllText(srcUSSPath);
-					contentUSS = contentUSS.Replace("Template", nameUpper);
+					contentUSS = contentUSS.Replace("ComponentTemplate", nameUpper);
 					File.WriteAllText(distUSSPath, contentUSS);
 					AssetDatabase.ImportAsset(distUSSPath,
 						ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
 				}
 				else
 				{
-					Debug.LogError($"CreateComponent: Template USS file not found at {srcUSSPath}");
+					Debug.LogError($"CreateComponent: ComponentTemplate USS file not found at {srcUSSPath}");
 				}
 
 				// csファイルはクラス名を書き換え
-				string srcCSharpPath = Path.Combine(srcPath, "Template.cs");
+				string srcCSharpPath = Path.Combine(srcPath, "ComponentTemplate.cs");
 				string distCSharpPath = Path.Combine(finalDistPath, nameUpper + ".cs");
 				if (File.Exists(srcCSharpPath))
 				{
 					string contentCSharp = File.ReadAllText(srcCSharpPath);
-					contentCSharp = contentCSharp.Replace("Template", nameUpper);
+					contentCSharp = contentCSharp.Replace("ComponentTemplate", nameUpper);
 					File.WriteAllText(distCSharpPath, contentCSharp);
 					AssetDatabase.ImportAsset(distCSharpPath,
 						ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
 				}
 				else
 				{
-					Debug.LogError($"CreateComponent: Template C# file not found at {srcCSharpPath}");
+					Debug.LogError($"CreateComponent: ComponentTemplate C# file not found at {srcCSharpPath}");
 				}
 			}
 			catch (System.Exception e)

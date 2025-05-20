@@ -1,9 +1,9 @@
 
 :root {
-    --background-color__Template: rgb(100, 100, 180);
+    --background-color__ComponentTemplate: rgb(100, 100, 180);
 
     padding: 8px;
-    background-color: var(--background-color__Template);
+    background-color: var(--background-color__ComponentTemplate);
     color: white;
 }
 
