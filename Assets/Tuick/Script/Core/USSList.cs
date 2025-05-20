@@ -8,7 +8,6 @@ using UnityEditor;
 
 namespace Tuick.Core
 {
-	[CreateAssetMenu(menuName = "UI/List/USSList", fileName = "USSList")]
 	public class USSList : ScriptableObject
 	{
 		[SerializeField] private StyleSheet[] ussList;

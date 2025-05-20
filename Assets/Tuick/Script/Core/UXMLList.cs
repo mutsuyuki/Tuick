@@ -8,7 +8,6 @@ using UnityEditor;
 
 namespace Tuick.Core
 {
-	[CreateAssetMenu(menuName = "UI/List/UXMLList", fileName = "UXMLList")]
 	public class UXMLList : ScriptableObject
 	{
 		[SerializeField] private VisualTreeAsset[] uxmlList;

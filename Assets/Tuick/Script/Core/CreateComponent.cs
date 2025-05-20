@@ -7,7 +7,7 @@ namespace Tuick.Core
 {
 	public class CreateComponent
 	{
-		[MenuItem("Assets/Create/UI/Component", false, 50)]
+		[MenuItem("Assets/Create/Tuick/Component", false, 50)]
 		public static void CreateComponentMenu()
 		{
 			ComponentNameInput.Show(
