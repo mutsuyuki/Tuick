@@ -1,0 +1,28 @@
+{
+  "name": "jp.mutsuyuki.tuick",
+  "version": "0.1.0",
+  "displayName": "Tuick UI Framework",
+  "description": "A Tiny component-oriented UI framework for Unity UI Toolkit. This framework allows you to create reusable UI components with a clean separation of markup (UXML), styles (USS), and logic (C#).",
+  "unity": "2022.3",
+  "author": {
+    "name": "mutsuyuki"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mutsuyuki/Tuick.git"
+  },
+  "keywords": [
+    "ui",
+    "uitoolkit",
+    "component",
+    "framework",
+    "tuick"
+  ],
+  "license": "MIT",
+  "documentationUrl": "https://github.com/mutsuyuki/Tuick/blob/main/Assets/Tuick/README.md",
+  "changelogUrl": "https://github.com/mutsuyuki/Tuick/blob/main/Assets/Tuick/CHANGELOG.md",
+  "licensesUrl": "https://github.com/mutsuyuki/Tuick/blob/main/Assets/Tuick/LICENSE.md",
+  "dependencies": {
+    "com.unity.modules.uielements": "^1.0.0"
+  }
+}
