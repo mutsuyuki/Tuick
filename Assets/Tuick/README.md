@@ -13,9 +13,11 @@ This framework allows you to create reusable UI components with a clean separati
 4. Select "Add package from git URL..."
 5. Enter the following URL:
    ```
-   https://github.com/mutsuyuki/Tuick.git
+   https://github.com/mutsuyuki/Tuick.git?path=Assets/Tuick
    ```
 6. Click "Add"
+
+   > Note: The `?path=Assets/Tuick` parameter is required because the package.json file is located in the Assets/Tuick directory rather than at the root of the repository.
 
 ### Manual Installation
 
