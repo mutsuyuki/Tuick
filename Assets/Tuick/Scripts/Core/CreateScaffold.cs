@@ -40,7 +40,7 @@ namespace Tuick.Core
                 Debug.LogError("CreateScaffold: Could not determine library root path. Scaffold creation aborted.");
                 return;
             }
-            libTemplatePath = Path.Combine(libTemplatePath, "Template");
+            libTemplatePath = Path.Combine(libTemplatePath, "Templates");
 
             string currentAssetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             if (string.IsNullOrEmpty(currentAssetPath))

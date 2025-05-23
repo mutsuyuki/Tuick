@@ -63,7 +63,7 @@ namespace Tuick.Core
 				return string.Empty;
 			}
 
-			string tempDirectory = Path.Combine(libRoot, "Template");
+			string tempDirectory = Path.Combine(libRoot, "Templates");
 
 			// Tempフォルダが存在しなければ作成
 			try

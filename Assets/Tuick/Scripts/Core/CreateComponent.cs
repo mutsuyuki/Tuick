@@ -32,7 +32,7 @@ namespace Tuick.Core
 				return;
 			}
 
-			srcPath = Path.Combine(srcPath, "Template");
+			srcPath = Path.Combine(srcPath, "Templates");
 
  		string distPath = AssetDatabase.GetAssetPath(Selection.activeObject);
  		if (string.IsNullOrEmpty(distPath))
