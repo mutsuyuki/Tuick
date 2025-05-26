@@ -90,10 +90,11 @@ This dependency will be automatically installed when you add the package through
 
 ## Notes
 
-- The Build directory is used for generated files and is excluded from version control
+- This package generates intermediate build files within the `Assets/Tuick/Build/` directory in your project's Assets folder. A .gitignore file is automatically created inside Assets/Tuick/Build/ to exclude its contents from version control
 - Make sure to refresh the UXML/USS lists after creating new components
-- When using this package in a new project, you may need to create the necessary directories (Build, Template, etc.) if they don't exist. The framework will attempt to create them automatically, but you can also create them manually if needed.
-- This package is designed to work with Unity's UI Toolkit, so make sure you have UI Toolkit enabled in your project.
+- The framework will automatically create all necessary directories in the Assets folder when needed
+- The package includes a build preprocessor that automatically regenerates all necessary files before building your project, so you don't need to worry about missing files in CI/CD environments
+- This package is designed to work with Unity's UI Toolkit, so make sure you have UI Toolkit enabled in your project
 
 ## License
 

@@ -11,7 +11,13 @@ namespace Tuick.Core
 		// ライブラリのルートパスのキャッシュ
 		private static string _cachedLibRootPath = null;
 
-		// Assembly Definition Fileをルートパスとする
+		// プロジェクトのアセット内に作成されるTuick関連フォルダの定義
+		private const string PROJECT_ASSETS_TUICK_ROOT_FOLDER_NAME = "Tuick";
+		private const string BUILD_FOLDER_NAME_IN_ASSETS = "Build";
+		private const string GITIGNORE_FILE_NAME = ".gitignore";
+		private const string GITIGNORE_CONTENT_FOR_BUILD_DIR = "*";
+		
+		// Assembly Definition Fileをライブラリのルートパスとする
 		private const string FrameworkAssemblyName = "Tuick";
 
 		public static string GetLibRootPath()
@@ -54,6 +60,47 @@ namespace Tuick.Core
 			return _cachedLibRootPath;
 		}
 
+		// Assets/Tuick フォルダのパスを取得（なければ作成）
+		public static string GetTuickProjectAssetsPath()
+		{
+			string assetsPath = "Assets";
+			string tuickAssetsPath = Path.Combine(assetsPath, PROJECT_ASSETS_TUICK_ROOT_FOLDER_NAME);
+
+			try
+			{
+				if (!Directory.Exists(tuickAssetsPath))
+				{
+					Directory.CreateDirectory(tuickAssetsPath);
+					AssetDatabase.Refresh(); // Unityエディタに新しいフォルダを認識させる
+					Debug.Log($"PathUtil: Created project assets Tuick directory: {tuickAssetsPath}");
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError($"PathUtil: Failed to create project assets Tuick directory at '{tuickAssetsPath}'. Error: {e.Message}");
+				return string.Empty;
+			}
+			return tuickAssetsPath;
+		}
+
+		private static void EnsureGitignoreInBuildDir(string buildDirPath)
+		{
+			string gitignorePath = Path.Combine(buildDirPath, GITIGNORE_FILE_NAME);
+			if (!File.Exists(gitignorePath))
+			{
+				try
+				{
+					File.WriteAllText(gitignorePath, GITIGNORE_CONTENT_FOR_BUILD_DIR);
+					AssetDatabase.ImportAsset(gitignorePath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+					Debug.Log($"PathUtil: Created .gitignore in Build directory: {gitignorePath}");
+				}
+				catch (System.Exception e)
+				{
+					Debug.LogError($"PathUtil: Failed to create .gitignore in '{buildDirPath}'. Error: {e.Message}");
+				}
+			}
+		}
+
 		public static string GetTemplateDirPath()
 		{
 			string libRoot = GetLibRootPath();
@@ -85,16 +132,14 @@ namespace Tuick.Core
 
 		public static string GetBuildDirPath()
 		{
-			string libRoot = GetLibRootPath();
-			if (string.IsNullOrEmpty(libRoot))
+			string tuickAssetsRoot = GetTuickProjectAssetsPath();
+			if (string.IsNullOrEmpty(tuickAssetsRoot)) 
 			{
-				Debug.LogWarning("PathUtil: Cannot get Build directory path. Library root path is invalid.");
+				Debug.LogWarning("PathUtil: Cannot get Build directory path. Tuick project assets path is invalid.");
 				return string.Empty;
 			}
+			string buildDirectory = Path.Combine(tuickAssetsRoot, BUILD_FOLDER_NAME_IN_ASSETS);
 
-			string buildDirectory = Path.Combine(libRoot, "Build");
-
-			// Buildフォルダが存在しなければ作成
 			try
 			{
 				if (!Directory.Exists(buildDirectory))
@@ -102,12 +147,12 @@ namespace Tuick.Core
 					Directory.CreateDirectory(buildDirectory);
 				}
 			}
-			catch (System.Exception e)
+			catch (IOException e)
 			{
-				Debug.LogError($"PathUtil: Failed to create Build directory at '{buildDirectory}'. Error: {e.Message}");
+				Debug.LogError($"PathUtil: IO Error creating Build directory at '{buildDirectory}'. Error: {e.Message}. Check permissions or path validity.");
 				return string.Empty;
 			}
-
+			EnsureGitignoreInBuildDir(buildDirectory);
 			return buildDirectory;
 		}
 
@@ -202,7 +247,7 @@ namespace Tuick.Core
 			string uxmlBuildPath = GetUXMLDirPath();
 			string templatePath = GetTemplateDirPath();
 
-			// 必要なディレクトリパスが取得できない場合は空のリストを返す
+			// ビルドパスまたはテンプレートパスの取得に失敗した場合は処理を中断
 			if (string.IsNullOrEmpty(uxmlBuildPath) || string.IsNullOrEmpty(templatePath))
 			{
 				Debug.LogWarning(
@@ -215,8 +260,8 @@ namespace Tuick.Core
 			for (int i = 0; i < guids.Length; i++)
 			{
 				string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-				// ビルド先やテンプレートディレクトリ内のファイルは除外
-				if (path.Contains(uxmlBuildPath) || path.Contains(templatePath))
+				// ビルド出力先 (Assets/Tuick/Build/uxml) とライブラリ内のテンプレートを除外
+				if (path.StartsWith(uxmlBuildPath) || path.StartsWith(templatePath))
 				{
 					continue;
 				}
@@ -245,8 +290,8 @@ namespace Tuick.Core
 			{
 				string path = AssetDatabase.GUIDToAssetPath(guids[i]);
 				if (!path.EndsWith(".uss") ||
-				    path.Contains(ussBuildPath) ||
-				    path.Contains(templatePath))
+				    path.StartsWith(ussBuildPath) ||
+				    path.StartsWith(templatePath))
 				{
 					continue;
 				}
