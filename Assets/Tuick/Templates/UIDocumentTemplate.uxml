@@ -1,6 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="width: 100%; height: 100%; justify-content: center; align-items: center;">
-        <ui:Label text="Tuick Template" style="font-size: 24px; font-weight: bold; color: #FFFFFF;" />
-        <ComponentTemplate />
-    </ui:VisualElement>
-</ui:UXML>

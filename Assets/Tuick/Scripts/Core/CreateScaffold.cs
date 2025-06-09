@@ -7,11 +7,12 @@ namespace Tuick.Core
 {
     public class CreateScaffold
     {
-        private const string UXML_DOCUMENT_TEMPLATE_FILENAME = "UIDocumentTemplate.uxml";
+        private const string UXML_DOCUMENT_TEMPLATE_FILENAME = "RootDocumentTemplate.uxml";
+        private const string ROOT_STYLESHEET_TEMPLATE_FILENAME = "RootStylesheetTemplate.uss";
         private const string COMPONENT_CS_TEMPLATE_FILENAME = "ComponentTemplate.cs";
         private const string COMPONENT_UXML_TEMPLATE_FILENAME = "ComponentTemplate.uxml";
         private const string COMPONENT_USS_TEMPLATE_FILENAME = "ComponentTemplate.uss";
-        private const string PLACEHOLDER_TAG = "<ComponentTemplate />";
+        private const string PLACEHOLDER_TAG = "ComponentTemplate";
 
         [MenuItem("Assets/Create/Tuick/Scaffold", false, 40)] // Componentより若い番号で先に表示
         public static void CreateScaffoldMenu()
@@ -53,7 +54,8 @@ namespace Tuick.Core
             }
 
             string nameUpper = char.ToUpper(name[0]) + name.Substring(1);
-            string documentAssetName = nameUpper + "UIDocument"; // e.g., MapUIDocument
+            string documentAssetName = nameUpper + "RootDocument"; // e.g., MapUIRootDocument
+            string stylesheetAssetName = nameUpper + "RootStylesheet"; // e.g., MapUIRootStylesheet
 
             string finalDistPath = currentAssetPath;
             if (createFolder)
@@ -79,8 +81,8 @@ namespace Tuick.Core
                     string docContent = File.ReadAllText(srcDocUXMLPath);
                     // Replace placeholder with actual component tag (e.g., <MapUI />)
                     // Assuming the component will be in the global namespace or properly imported
-                    string componentTag = $"<{nameUpper} />"; 
-                    docContent = docContent.Replace(PLACEHOLDER_TAG, componentTag);
+                    docContent = docContent.Replace(PLACEHOLDER_TAG, nameUpper);
+                    docContent = docContent.Replace("RootStylesheetTemplate.uss", stylesheetAssetName + ".uss");
                     File.WriteAllText(distDocUXMLPath, docContent);
                     AssetDatabase.ImportAsset(distDocUXMLPath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
                     Debug.Log($"Generated {distDocUXMLPath}");
@@ -89,6 +91,20 @@ namespace Tuick.Core
                 {
                     Debug.LogError($"CreateScaffold: UIDocument Template UXML file not found at {srcDocUXMLPath}");
                     return; // Stop if main document template is missing
+                }
+
+                // Create [Name]RootStylesheet.uss
+                string srcStyleUSSPath = Path.Combine(libTemplatePath, ROOT_STYLESHEET_TEMPLATE_FILENAME);
+                string distStyleUSSPath = Path.Combine(finalDistPath, stylesheetAssetName + ".uss");
+                if (File.Exists(srcStyleUSSPath))
+                {
+                    File.Copy(srcStyleUSSPath, distStyleUSSPath, false);
+                    AssetDatabase.ImportAsset(distStyleUSSPath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+                    Debug.Log($"Generated {distStyleUSSPath}");
+                }
+                else
+                {
+                    Debug.LogError($"CreateScaffold: Root Stylesheet Template USS file not found at {srcStyleUSSPath}");
                 }
 
                 // 2. Create [Name].uxml (from ComponentTemplate.uxml)
@@ -145,7 +161,7 @@ namespace Tuick.Core
             }
 
             // Update UXML/USS lists after creating scaffold
-            EditorApplication.delayCall += () => 
+            EditorApplication.delayCall += () =>
             {
                 UIListStore.Instance.Refresh();
                 Debug.Log($"CreateScaffold: Updating UXML/USS lists after creating scaffold '{nameUpper}'.");

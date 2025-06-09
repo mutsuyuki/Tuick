@@ -1,9 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:tuick="Tuick">
-    <ui:Label name="title" class="title" text="Title" />
-    <ui:VisualElement class="contents">
-        <ui:Label name="value" class="value" text="" />
+    <ui:Label class="message" text="">
+        <ui:DataBinding property="text" data-source-path="Message.Value" binding-mode="ToTarget" />
+    </ui:Label>
+    <ui:Label class="counter-value" text="">
+        <ui:DataBinding property="text" data-source-path="Count.Value" binding-mode="ToTarget" />
+    </ui:Label>
+    <ui:VisualElement class="controls">
+        <ui:Button name="minus" text="-" class="control-button" />
         <ui:VisualElement class="slot_container">
             <tuick:Slot />
         </ui:VisualElement>
+        <ui:Button name="plus" text="+" class="control-button" />
     </ui:VisualElement>
 </ui:UXML>

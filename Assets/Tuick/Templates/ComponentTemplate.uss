@@ -1,19 +1,64 @@
-
 :root {
-    --background-color__ComponentTemplate: rgb(100, 100, 180);
+    width:320px;
+    height:320px;
+    padding: 24px 32px 32px;
+    justify-content: space-around;
+    align-items: center;
 
-    padding: 8px;
-    background-color: var(--background-color__ComponentTemplate);
-    color: white;
-}
-
-.contents {
+    background-color: var(--background-color);
+    border-color: white;
     border-width: 1px;
-    border-color: tomato;
+    border-radius: 16px;
+    color: rgb(220, 220, 220);
 }
+
+.message {
+    font-size: 18px;
+}
+
+.counter-value {
+    font-size: 128px;
+}
+
+.controls {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.control-button {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border-color: white;
+    border-width: 1px;
+    color: white;
+    font-size: 48px;
+    padding-bottom: 16px;
+    -unity-text-align: middle-center;
+
+    /* Animation */
+    background-color: rgba(255, 255, 255, 0.05);
+    scale: 1.0 1.0;
+    transition-property: background-color, scale;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+.control-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    scale: 1.1 1.1;
+}
+
+.control-button:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    scale: 0.95 0.95;
+}
+
 
 .slot_container {
-    border-width: 1px;
-    border-color: rgb(200, 200, 200);
     padding: 8px;
+    justify-content: center;
+    align-items: center;
 }

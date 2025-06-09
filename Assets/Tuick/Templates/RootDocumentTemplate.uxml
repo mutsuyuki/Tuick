@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Style src="RootStylesheetTemplate.uss" />
+    <ui:Label text="Welcome to Tuick" class="global-title" />
+    <ui:VisualElement class="global-spacer" />
+    <ui:VisualElement class="global-flex-row">
+        <ComponentTemplate min-value="0" max-value="10" init-value="5">
+            <ui:Label text="RANGE" class="global-bold-text global-small-text" />
+            <ui:VisualElement class="global-flex-row">
+                <ui:Label text="0"   class="global-bold-text global-medium-text"/>
+                <ui:Label text="-"/>
+                <ui:Label text="10"   class="global-bold-text global-medium-text"/>
+            </ui:VisualElement>
+        </ComponentTemplate>
+        <ui:VisualElement class="global-spacer" />
+        <ComponentTemplate min-value="10" max-value="25" init-value="15">
+            <ui:Label text="RANGE" class="global-bold-text global-small-text" />
+            <ui:VisualElement class="global-flex-row">
+                <ui:Label text="10"   class="global-bold-text global-medium-text"/>
+                <ui:Label text="-"/>
+                <ui:Label text="25"   class="global-bold-text global-medium-text"/>
+            </ui:VisualElement>
+        </ComponentTemplate>
+    </ui:VisualElement>
+</ui:UXML>
