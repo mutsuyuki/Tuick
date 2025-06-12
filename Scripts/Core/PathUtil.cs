@@ -16,7 +16,7 @@ namespace Tuick.Core
 		private const string BUILD_FOLDER_NAME_IN_ASSETS = "Build";
 		private const string GITIGNORE_FILE_NAME = ".gitignore";
 		private const string GITIGNORE_CONTENT_FOR_BUILD_DIR = "*";
-		
+
 		// Assembly Definition Fileをライブラリのルートパスとする
 		private const string FrameworkAssemblyName = "Tuick";
 
@@ -266,7 +266,12 @@ namespace Tuick.Core
 					continue;
 				}
 
-				paths.Add(path);
+				// Check for corresponding C# file
+				string csPath = Path.ChangeExtension(path, ".cs");
+				if (File.Exists(csPath))
+				{
+					paths.Add(path);
+				}
 			}
 
 			return paths;
@@ -296,7 +301,12 @@ namespace Tuick.Core
 					continue;
 				}
 
-				paths.Add(path);
+				// Check for corresponding C# file
+				string csPath = Path.ChangeExtension(path, ".cs");
+				if (File.Exists(csPath))
+				{
+					paths.Add(path);
+				}
 			}
 
 			return paths;

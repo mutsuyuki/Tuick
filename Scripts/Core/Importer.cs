@@ -24,30 +24,36 @@ namespace Tuick.Core
 			{
 				if (path.EndsWith(".uxml"))
 				{
-					if (
-						path.Contains(PathUtil.GetUXMLDirPath()) ||
-						path.Contains(PathUtil.GetTemplateDirPath())
-					)
+					if (path.Contains(PathUtil.GetUXMLDirPath()) ||
+					    path.Contains(PathUtil.GetTemplateDirPath()))
 					{
 						continue;
 					}
 
-					UXMLProcessor.Deploy(path);
-					isUXMLChanged = true;
+					// Check if a corresponding C# file exists
+					string csPath = Path.ChangeExtension(path, ".cs");
+					if (File.Exists(csPath))
+					{
+						UXMLProcessor.Deploy(path);
+						isUXMLChanged = true;
+					}
 				}
 
 				if (path.EndsWith(".uss"))
 				{
-					if (
-						path.Contains(PathUtil.GetUSSDirPath()) ||
-						path.Contains(PathUtil.GetTemplateDirPath())
-					)
+					if (path.Contains(PathUtil.GetUSSDirPath()) ||
+					    path.Contains(PathUtil.GetTemplateDirPath()))
 					{
 						continue;
 					}
 
-					USSProcessor.Deploy(path);
-					isUSSChanged = true;
+					// Check if a corresponding C# file exists
+					string csPath = Path.ChangeExtension(path, ".cs");
+					if (File.Exists(csPath))
+					{
+						USSProcessor.Deploy(path);
+						isUSSChanged = true;
+					}
 				}
 			}
 
