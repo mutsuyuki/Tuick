@@ -5,6 +5,10 @@ using Tuick.Core;
 
 namespace Tuick
 {
+	
+	[System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
+	public class FullScreenAttribute : System.Attribute { }
+
 	public class BaseElement : VisualElement
 	{
 		protected string instanceId { get; }
@@ -67,6 +71,18 @@ namespace Tuick
 			templateContainer.style.flexGrow = 1;
 			templateContainer.style.width = Length.Percent(100);
 			templateContainer.style.height = Length.Percent(100);
+			
+			// [FullScreen] 属性対応
+			if (System.Attribute.IsDefined(GetType(), typeof(FullScreenAttribute)))
+			{
+				style.position = Position.Absolute;
+				style.left = 0;
+				style.top = 0;
+				style.right = 0;
+				style.bottom = 0;
+				style.width = Length.Percent(100);
+				style.height = Length.Percent(100);
+			}
 
 			// 疑似scopedにするために、全elementにクラスを付与
 			templateContainer.AddToClassList(GetType().Name);
