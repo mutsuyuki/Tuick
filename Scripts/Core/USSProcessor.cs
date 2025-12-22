@@ -76,16 +76,58 @@ namespace Tuick.Core
 		// クラスを付与する
 		public static string addClass(string property, string className)
 		{
-			var regex = new Regex(@"([a-z0-9_-]+)", RegexOptions.IgnoreCase);
+			var word = new Regex(@"^[a-z0-9_-]+$", RegexOptions.IgnoreCase);
 			List<string> tokens = SplitString(property);
 			string modifiedSelector = "";
-			foreach (var token in tokens)
+
+			// よく使う疑似クラスのみ最小対応（関数系疑似は触らない）
+			var pseudos = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
 			{
-				modifiedSelector += token;
-				if (regex.IsMatch(token))
+				"hover", "active", "focus", "disabled", "enabled", "checked", "selected"
+			};
+
+			// attribute selector 内は触らない（破壊回避）
+			bool inAttr = false;
+
+			for (int i = 0; i < tokens.Count; i++)
+			{
+				var token = tokens[i];
+
+				// attribute selector の開始/終了判定
+				if (token.Contains("[")) inAttr = true;
+
+				// 疑似クラス名に付く .className を「: の直前」に移す（意味は変えない）
+				// 例) ".x.AABB:hover.AABB" → ".x.AABB.AABB:hover"
+				if (!inAttr && token.Contains(":") && i + 1 < tokens.Count)
 				{
-					modifiedSelector += "." + className;
+					var next = tokens[i + 1];
+					if (word.IsMatch(next) && pseudos.Contains(next))
+					{
+						modifiedSelector += "." + className;
+					}
 				}
+
+				modifiedSelector += token;
+
+				if (word.IsMatch(token))
+				{
+					// attribute selector 内では付与しない（破壊回避）
+					if (inAttr) { /* no-op */ }
+					else
+					{
+						// 直前が ":" かつ対象疑似クラス名なら、後ろには付与しない（上で移動済み）
+						if (i > 0 && tokens[i - 1].Contains(":") && pseudos.Contains(token))
+						{
+							// no-op
+						}
+						else
+						{
+							modifiedSelector += "." + className;
+						}
+					}
+				}
+
+				if (token.Contains("]")) inAttr = false;
 			}
 
 			return modifiedSelector;
