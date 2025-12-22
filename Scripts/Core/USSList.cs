@@ -12,6 +12,13 @@ namespace Tuick.Core
 	{
 		[SerializeField] private StyleSheet[] ussList;
 
+		private Dictionary<string, StyleSheet> _ussCache;
+
+		private void OnEnable()
+		{
+			_ussCache = null;
+		}
+
 		public StyleSheet[] GetUxmlList()
 		{
 			return ussList;
@@ -24,12 +31,24 @@ namespace Tuick.Core
 				? fullTypeName.Substring(fullTypeName.LastIndexOf('.') + 1)
 				: fullTypeName;
 
-			for (int i = 0; i < ussList.Length; i++)
+			if (_ussCache == null)
 			{
-				if (ussList[i].name == className)
+				_ussCache = new Dictionary<string, StyleSheet>();
+				if (ussList != null)
 				{
-					return ussList[i];
+					foreach (var sheet in ussList)
+					{
+						if (sheet != null && !_ussCache.ContainsKey(sheet.name))
+						{
+							_ussCache[sheet.name] = sheet;
+						}
+					}
 				}
+			}
+
+			if (_ussCache.TryGetValue(className, out var styleSheet))
+			{
+				return styleSheet;
 			}
 
 			return null;

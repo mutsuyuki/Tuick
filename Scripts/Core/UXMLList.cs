@@ -12,6 +12,13 @@ namespace Tuick.Core
 	{
 		[SerializeField] private VisualTreeAsset[] uxmlList;
 
+		private Dictionary<string, VisualTreeAsset> _uxmlCache;
+
+		private void OnEnable()
+		{
+			_uxmlCache = null;
+		}
+
 		public VisualTreeAsset[] GetUxmlList()
 		{
 			return uxmlList;
@@ -24,12 +31,24 @@ namespace Tuick.Core
 				? fullTypeName.Substring(fullTypeName.LastIndexOf('.') + 1)
 				: fullTypeName;
 
-			for (int i = 0; i < uxmlList.Length; i++)
+			if (_uxmlCache == null)
 			{
-				if (uxmlList[i].name == className)
+				_uxmlCache = new Dictionary<string, VisualTreeAsset>();
+				if (uxmlList != null)
 				{
-					return uxmlList[i].CloneTree();
+					foreach (var asset in uxmlList)
+					{
+						if (asset != null && !_uxmlCache.ContainsKey(asset.name))
+						{
+							_uxmlCache[asset.name] = asset;
+						}
+					}
 				}
+			}
+
+			if (_uxmlCache.TryGetValue(className, out var template))
+			{
+				return template.CloneTree();
 			}
 
 			return null;

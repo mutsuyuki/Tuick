@@ -64,7 +64,6 @@ namespace Tuick
 
 			// 疑似scopedにするために、全elementにクラスを付与
 			templateContainer.AddToClassList(GetType().Name);
-			SetClassNameRecursive(templateContainer);
 
 			// スタイルシート読み込み
 			USSList ussList = UIListStore.Instance.GetUSSList();
@@ -100,29 +99,6 @@ namespace Tuick
 			visualsInitialized = true;
 		}
 
-		// 自Element内の各要素にクラス名を付与（疑似scoped cssのため）
-		private void SetClassNameRecursive(VisualElement element)
-		{
-			foreach (var child in element.Children())
-			{
-				// Templateは各カスタムエレメントで設定するのでスキップ
-				if (child.GetType() == typeof(TemplateContainer))
-					continue;
-
-				// Slot対象のエレメントがある場合、そのエレメントだけは親のクラスにする
-				var isCustomElement = child is BaseElement;
-				var grandChilds = child.Children().ToList();
-				var hasTemplate = grandChilds.Any(v => v.GetType() != typeof(TemplateContainer));
-				var hasSlotTarget = grandChilds.Count > 1;
-				if (isCustomElement && (!hasTemplate || !hasSlotTarget))
-					continue;
-
-				child.AddToClassList(GetType().Name);
-				child.AddToClassList(instanceId);
-				SetClassNameRecursive(child);
-			}
-		}
-
 		// Slotがあるかチェック（自Element内のみチェック）
 		private Slot SearchSlot(VisualElement element)
 		{
@@ -147,12 +123,17 @@ namespace Tuick
 			return null;
 		}
 
+		private const string SlotHostClass = "tuick-slot-host";
+		private const string SlotItemClass = "tuick-slot-item";
+
 		// 挟んだElementでSlotを置換
 		private void ReplaceSlot(Slot slot)
 		{
 			// slotがツリーにない場合は何もしない
 			if (slot.parent == null)
 				return;
+
+			slot.parent.AddToClassList(SlotHostClass);
 
 			var slotIndex = slot.parent.IndexOf(slot);
 			var moveTargets
@@ -163,6 +144,7 @@ namespace Tuick
 
 			foreach (var target in moveTargets)
 			{
+				target.AddToClassList(SlotItemClass);
 				Remove(target);
 				slot.parent.Insert(slotIndex, target);
 			}
