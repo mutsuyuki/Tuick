@@ -60,7 +60,13 @@ namespace Tuick
 				return;
 			}
 
-			Add(templateContainer); // テンプレートを自身に追加
+			// テンプレートを自身に追加
+			Add(templateContainer);
+			
+			// コンテナのサイズを親に合わせるようにしておく
+			templateContainer.style.flexGrow = 1;
+			templateContainer.style.width = Length.Percent(100);
+			templateContainer.style.height = Length.Percent(100);
 
 			// 疑似scopedにするために、全elementにクラスを付与
 			templateContainer.AddToClassList(GetType().Name);
