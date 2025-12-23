@@ -1,4 +1,6 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:tuick="Tuick">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" 
+         xmlns:uie="UnityEditor.UIElements" 
+         xmlns:tuick="Tuick">
     <ui:Label class="message" text="">
         <ui:DataBinding property="text" data-source-path="Message.Value" binding-mode="ToTarget" />
     </ui:Label>

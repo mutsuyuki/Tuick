@@ -50,7 +50,14 @@ namespace Tuick.Core
 		{
 #if UNITY_EDITOR
 			Debug.Log("UIListStore: Initialization started.");
+			RebuildListAssets();
+#endif
+			Refresh();
+		}
 
+#if UNITY_EDITOR
+		public void RebuildListAssets()
+		{
 			// Resourcesフォルダのパスを取得
 			string saveDir = PathUtil.GetResourcesDirPath();
 			if (string.IsNullOrEmpty(saveDir))
@@ -112,10 +119,8 @@ namespace Tuick.Core
 						ussListPath, e.Message, e.StackTrace);
 				}
 			}
-
-#endif
-			Refresh();
 		}
+#endif
 
 		public void Refresh()
 		{
