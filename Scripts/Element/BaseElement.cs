@@ -44,34 +44,47 @@ namespace Tuick
 				return;
 			}
 
-			// テンプレート読み込み
+			// リスト取得
 			UXMLList uxmlList = UIListStore.Instance.GetUXMLList();
-			if (uxmlList == null)
+			USSList ussList = UIListStore.Instance.GetUSSList();
+
+			if (uxmlList == null || ussList == null)
 			{
 				Debug.LogError(
-					$"[{GetType().Name} ({instanceId})] UXMLList is null. UIListStore might not be initialized or UXMLList asset is missing. Template cannot be loaded."
+					$"[{GetType().Name} ({instanceId})] UIListStore not initialized properly. UXMLList or USSList is null."
 				);
 				return;
 			}
 
 			string fullTypeName = GetType().FullName;
+
+			// テンプレートとスタイルの取得
 			templateContainer = uxmlList.GetTemplate(fullTypeName);
-			if (templateContainer == null)
+			StyleSheet styleSheet = ussList.GetTemplate(fullTypeName);
+
+			bool hasUxml = templateContainer != null;
+			bool hasUss = styleSheet != null;
+
+			// 不足情報のログ集約 (Info)
+			if (!hasUxml || !hasUss)
 			{
-				Debug.LogError(
-					$"[{GetType().Name} ({instanceId})] Failed to load UXML template for '{fullTypeName}'. Check if UXML file exists and is correctly named in UXMLList."
-				);
-				return;
+				string missing = (!hasUxml && !hasUss) ? "UXML & USS" : (!hasUxml ? "UXML" : "USS");
+				Debug.Log($"[{GetType().Name} ({instanceId})] Initialized without {missing}. (Flexible mode)");
 			}
 
-			// テンプレートを自身に追加
-			Add(templateContainer);
-			
-			// コンテナのサイズを親に合わせるようにしておく
-			templateContainer.style.flexGrow = 1;
-			templateContainer.style.width = Length.Percent(100);
-			templateContainer.style.height = Length.Percent(100);
-			
+			VisualElement styleTarget = this;
+
+			if (hasUxml)
+			{
+				Add(templateContainer);
+				styleTarget = templateContainer;
+
+				// コンテナのサイズを親に合わせるようにしておく
+				templateContainer.style.flexGrow = 1;
+				templateContainer.style.width = Length.Percent(100);
+				templateContainer.style.height = Length.Percent(100);
+			}
+
 			// [FullScreen] 属性対応
 			if (System.Attribute.IsDefined(GetType(), typeof(FullScreenAttribute)))
 			{
@@ -84,38 +97,23 @@ namespace Tuick
 				style.height = Length.Percent(100);
 			}
 
-			// 疑似scopedにするために、全elementにクラスを付与
-			templateContainer.AddToClassList(GetType().Name);
+			// 疑似scopedにするためにクラスを付与
+			styleTarget.AddToClassList(GetType().Name);
 
-			// スタイルシート読み込み
-			USSList ussList = UIListStore.Instance.GetUSSList();
-			if (ussList == null)
+			// スタイルシート適用
+			if (hasUss)
 			{
-				Debug.LogWarning(
-					$"[{GetType().Name} ({instanceId})] USSList is null. UIListStore might not be initialized or USSList asset is missing. Stylesheet cannot be loaded."
-				);
-			}
-			else
-			{
-				StyleSheet styleSheet = ussList.GetTemplate(fullTypeName);
-				if (styleSheet == null)
-				{
-					Debug.LogWarning(
-						$"[{GetType().Name} ({instanceId})] StyleSheet for '{fullTypeName}' not found. Check if USS file exists and is correctly named in USSList."
-					);
-				}
-				else
-				{
-					// templateContainer (UXMLのルート) にスタイルシートを追加
-					templateContainer.styleSheets.Add(styleSheet);
-				}
+				styleTarget.styleSheets.Add(styleSheet);
 			}
 
-			// スロット処理
-			var slot = SearchSlot(templateContainer);
-			if (slot != null)
+			// スロット処理 (UXMLがある場合のみ)
+			if (hasUxml)
 			{
-				ReplaceSlot(slot);
+				var slot = SearchSlot(templateContainer);
+				if (slot != null)
+				{
+					ReplaceSlot(slot);
+				}
 			}
 
 			visualsInitialized = true;
