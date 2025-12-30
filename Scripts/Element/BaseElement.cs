@@ -5,7 +5,6 @@ using Tuick.Core;
 
 namespace Tuick
 {
-	
 	[System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
 	public class FullScreenAttribute : System.Attribute { }
 
@@ -72,17 +71,29 @@ namespace Tuick
 				Debug.Log($"[{GetType().Name} ({instanceId})] Initialized without {missing}. (Flexible mode)");
 			}
 
-			VisualElement styleTarget = this;
+			// 0. 既存の子要素（スロットに挿入されるべきコンテンツ）を退避
+			// TemplateContainerを展開すると混ざってしまうため、先に取り出しておく
+			var slotContents = Children().ToList();
+			Clear();
 
 			if (hasUxml)
 			{
-				Add(templateContainer);
-				styleTarget = templateContainer;
-
-				// コンテナのサイズを親に合わせるようにしておく
-				templateContainer.style.flexGrow = 1;
-				templateContainer.style.width = Length.Percent(100);
-				templateContainer.style.height = Length.Percent(100);
+				// 1. TemplateContainerの中身を自分自身に移植
+				// これにより、余計なTemplateContainer階層を排除し、:rootがこのElement自身を指すようにする。
+				while (templateContainer.childCount > 0)
+				{
+					var child = templateContainer.ElementAt(0);
+					Add(child);
+				}
+				// 中身は空になったが、参照は保持しておく（GC任せ）
+			}
+			else
+			{
+				// UXMLがない場合は、退避したコンテンツをそのまま戻す（単なるコンテナとして振る舞う）
+				foreach (var content in slotContents)
+				{
+					Add(content);
+				}
 			}
 
 			// [FullScreen] 属性対応
@@ -98,21 +109,23 @@ namespace Tuick
 			}
 
 			// 疑似scopedにするためにクラスを付与
-			styleTarget.AddToClassList(GetType().Name);
+			AddToClassList(GetType().Name);
 
 			// スタイルシート適用
+			// 常に自分自身(this)に適用する。これで :root セレクタはこのElement自身を指すことになる。
 			if (hasUss)
 			{
-				styleTarget.styleSheets.Add(styleSheet);
+				styleSheets.Add(styleSheet);
 			}
 
 			// スロット処理 (UXMLがある場合のみ)
-			if (hasUxml)
+			if (hasUxml && slotContents.Count > 0)
 			{
-				var slot = SearchSlot(templateContainer);
+				// 自分自身(this)からスロットを探す
+				var slot = SearchSlot(this);
 				if (slot != null)
 				{
-					ReplaceSlot(slot);
+					InsertSlotContents(slot, slotContents);
 				}
 			}
 
@@ -146,8 +159,8 @@ namespace Tuick
 		private const string SlotHostClass = "tuick-slot-host";
 		private const string SlotItemClass = "tuick-slot-item";
 
-		// 挟んだElementでSlotを置換
-		private void ReplaceSlot(Slot slot)
+		// スロットの位置にコンテンツを挿入する
+		private void InsertSlotContents(Slot slot, System.Collections.Generic.List<VisualElement> contents)
 		{
 			// slotがツリーにない場合は何もしない
 			if (slot.parent == null)
@@ -156,16 +169,18 @@ namespace Tuick
 			slot.parent.AddToClassList(SlotHostClass);
 
 			var slotIndex = slot.parent.IndexOf(slot);
-			var moveTargets
-				= Children()
-					.Where(v => v.GetType() != typeof(TemplateContainer))
-					.ToList();
-			moveTargets.Reverse();
+			
+			// 挿入順序を維持するため、逆順にして同じインデックスに挿入する
+			// 例: contents=[A, B], index=0
+			// 1. Insert B at 0 -> [B, slot]
+			// 2. Insert A at 0 -> [A, B, slot]
+			var reverseContents = new System.Collections.Generic.List<VisualElement>(contents);
+			reverseContents.Reverse();
 
-			foreach (var target in moveTargets)
+			foreach (var target in reverseContents)
 			{
 				target.AddToClassList(SlotItemClass);
-				Remove(target);
+				// targetは既にClear()で親から外れているのでRemove不要
 				slot.parent.Insert(slotIndex, target);
 			}
 
