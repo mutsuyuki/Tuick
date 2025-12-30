@@ -36,7 +36,6 @@ namespace Tuick
 			RegisterCallback<AttachToPanelEvent>(OnElementAttached);
 		}
 
-
 		private void OnElementAttached(AttachToPanelEvent e)
 		{
 			// 初期化済みかtemplateContainerが何らかの理由で既に存在する場合はスキップ
@@ -171,27 +170,6 @@ namespace Tuick
 			}
 
 			slot.parent.Remove(slot);
-		}
-	
-		/// <summary>
-		/// 表示状態の返却
-		/// </summary>
-		public virtual bool IsVisible => style.display != DisplayStyle.None;
-	
-		/// <summary>
-		/// 要素を表示します
-		/// </summary>
-		public virtual void Show()
-		{
-			style.display = DisplayStyle.Flex;
-		}
-
-		/// <summary>
-		/// 要素を非表示にします
-		/// </summary>
-		public virtual void Hide()
-		{
-			style.display = DisplayStyle.None;
 		}
 	}
 }
